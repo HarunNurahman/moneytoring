@@ -14,7 +14,7 @@ class Session {
     return success;
   }
 
-  static Future<UserModel> getUser(UserModel userModel) async {
+  static Future<UserModel> getUser() async {
     UserModel userModel = UserModel();
     final pref = await SharedPreferences.getInstance();
 

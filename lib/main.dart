@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moneytoring/models/user_model.dart';
+import 'package:moneytoring/pages/home_page.dart';
+import 'package:moneytoring/pages/login_page.dart';
+import 'package:moneytoring/services/session.dart';
 import 'package:moneytoring/shared/styles.dart';
 
 void main() {
@@ -24,7 +28,16 @@ class MyApp extends StatelessWidget {
           foregroundColor: kWhiteColor,
         ),
       ),
-      home: Scaffold(),
+      home: FutureBuilder(
+        future: Session.getUser(),
+        builder: (context, AsyncSnapshot<UserModel> snapshot) {
+          if (snapshot.data != null && snapshot.data!.idUser != null) {
+            return HomePage();
+          } else {
+            return LoginPage();
+          }
+        },
+      ),
     );
   }
 }
