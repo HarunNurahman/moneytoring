@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:moneytoring/models/user_model.dart';
 import 'package:moneytoring/pages/home_page.dart';
 import 'package:moneytoring/pages/login_page.dart';
-import 'package:moneytoring/services/session.dart';
+import 'package:moneytoring/services/session_services.dart';
 import 'package:moneytoring/shared/styles.dart';
 
 void main() {
