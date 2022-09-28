@@ -28,7 +28,7 @@ class Session {
     String? user = pref.getString('tb_user');
     if (user != null) {
       Map<String, dynamic> mapUser = jsonDecode(user);
-      user = UserModel.fromJson(mapUser) as String?;
+      userModel = UserModel.fromJson(mapUser);
     }
     final userController = Get.put(UserController());
     userController.setData(userModel);

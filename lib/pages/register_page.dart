@@ -3,35 +3,42 @@ import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:moneytoring/pages/home_page.dart';
-import 'package:moneytoring/pages/register_page.dart';
+import 'package:moneytoring/pages/login_page.dart';
 import 'package:moneytoring/services/user_sources.dart';
 import 'package:moneytoring/shared/styles.dart';
 
-class LoginPage extends StatefulWidget {
-  LoginPage({Key? key}) : super(key: key);
+class RegisterPage extends StatefulWidget {
+  RegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  login() async {
+  register() async {
     if (formKey.currentState!.validate()) {
-      bool success = await UserSource.login(
+      bool success = await UserSource.register(
+        _nameController.text,
         _emailController.text,
         _passwordController.text,
       );
       if (success) {
-        DInfo.dialogSuccess(context, 'Berhasil Login');
+        DInfo.dialogSuccess(context, 'Berhasil register');
         DInfo.closeDialog(context, actionAfterClose: () {
           Get.off(() => HomePage());
         });
       } else {
-        DInfo.dialogError(context, 'Tidak Dapat Login');
+        // DInfo.dialogError(context, 'Tidak Dapat register');
+        if (success == 'email') {
+          DInfo.dialogSuccess(context, 'Email Sudah Terdaftar');
+          DInfo.closeDialog(context);
+        } else
+          DInfo.dialogError(context, 'Registrasi Gagal');
       }
     }
   }
@@ -63,6 +70,30 @@ class _LoginPageState extends State<LoginPage> {
                             width: 108,
                           ),
                           DView.spaceHeight(60),
+                          // Name Text Field
+                          TextFormField(
+                            controller: _nameController,
+                            validator: (value) =>
+                                value == '' ? 'Nama Harap Diisi!' : null,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            decoration: InputDecoration(
+                              hintText: 'nama',
+                              hintStyle: blueTextStyle,
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 30,
+                                vertical: 16,
+                              ),
+                              fillColor: kPrimaryColor.withOpacity(0.25),
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                          DView.spaceHeight(20),
                           // Email Text Field
                           TextFormField(
                             controller: _emailController,
@@ -112,13 +143,13 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           DView.spaceHeight(40),
-                          // Login Button
+                          // register Button
                           Material(
                             color: kPrimaryColor,
                             borderRadius: BorderRadius.circular(30),
                             child: InkWell(
                               onTap: () {
-                                login();
+                                register();
                               },
                               borderRadius: BorderRadius.circular(30),
                               child: Padding(
@@ -127,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                                   vertical: 16,
                                 ),
                                 child: Text(
-                                  'Login',
+                                  'Register',
                                   style: whiteTextStyle,
                                 ),
                               ),
@@ -143,15 +174,15 @@ class _LoginPageState extends State<LoginPage> {
                     child: Center(
                       child: GestureDetector(
                         onTap: () {
-                          Get.to(() => RegisterPage());
+                          Get.back();
                         },
                         child: RichText(
                           text: TextSpan(
-                            text: 'Belum Punya Akun? ',
+                            text: 'Sudah Punya Akun? ',
                             style: blackTextStyle,
                             children: [
                               TextSpan(
-                                text: 'Register',
+                                text: 'Login',
                                 style: blueTextStyle.copyWith(
                                   decoration: TextDecoration.underline,
                                   fontWeight: bold,
