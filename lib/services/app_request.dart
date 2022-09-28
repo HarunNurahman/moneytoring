@@ -4,7 +4,7 @@ import 'package:d_method/d_method.dart';
 import 'package:http/http.dart' as http;
 
 class AppRequest {
-  Future<Map?> gets(String url, {Map<String, String>? headers}) async {
+  static Future<Map?> gets(String url, {Map<String, String>? headers}) async {
     try {
       http.Response response = await http.get(Uri.parse(url), headers: headers);
       DMethod.printTitle('try - $url', response.body);
@@ -17,7 +17,7 @@ class AppRequest {
     }
   }
 
-  Future<Map?> post(String url, Object? body,
+  static Future<Map?> post(String url, Object? body,
       {Map<String, String>? headers}) async {
     try {
       http.Response response = await http.post(
