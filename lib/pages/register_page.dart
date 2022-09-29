@@ -22,24 +22,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   register() async {
     if (formKey.currentState!.validate()) {
-      bool success = await UserSource.register(
+      await UserSource.register(
         _nameController.text,
         _emailController.text,
         _passwordController.text,
       );
-      if (success) {
-        DInfo.dialogSuccess(context, 'Berhasil register');
-        DInfo.closeDialog(context, actionAfterClose: () {
-          Get.off(() => HomePage());
-        });
-      } else {
-        // DInfo.dialogError(context, 'Tidak Dapat register');
-        if (success == 'email') {
-          DInfo.dialogSuccess(context, 'Email Sudah Terdaftar');
-          DInfo.closeDialog(context);
-        } else
-          DInfo.dialogError(context, 'Registrasi Gagal');
-      }
     }
   }
 

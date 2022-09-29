@@ -21,18 +21,10 @@ class _LoginPageState extends State<LoginPage> {
 
   login() async {
     if (formKey.currentState!.validate()) {
-      bool success = await UserSource.login(
+      await UserSource.login(
         _emailController.text,
         _passwordController.text,
       );
-      if (success) {
-        DInfo.dialogSuccess(context, 'Berhasil Login');
-        DInfo.closeDialog(context, actionAfterClose: () {
-          Get.off(() => HomePage());
-        });
-      } else {
-        DInfo.dialogError(context, 'Tidak Dapat Login');
-      }
     }
   }
 

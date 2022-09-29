@@ -1,11 +1,13 @@
 import 'package:d_info/d_info.dart';
+import 'package:get/get.dart';
 import 'package:moneytoring/models/user_model.dart';
+import 'package:moneytoring/pages/home_page.dart';
+import 'package:moneytoring/pages/login_page.dart';
 import 'package:moneytoring/services/api_services.dart';
 import 'package:moneytoring/services/app_request.dart';
 import 'package:moneytoring/services/session_services.dart';
 
 class UserSource {
-
   static Future<bool> login(String email, String password) async {
     String url = '${ApiServices.userUrl}/login.php';
     Map? responseBody = await AppRequest.post(url, {
@@ -15,8 +17,12 @@ class UserSource {
 
     if (responseBody == null) return false;
     if (responseBody['success']) {
+      DInfo.notifSuccess('Login Berhasil', 'Selamat Datang');
       var mapUser = responseBody['data'];
       Session.saveUser(UserModel.fromJson(mapUser));
+      Get.to(() => HomePage());
+    } else {
+      DInfo.notifError('Login Gagal', 'Email atau Password Salah');
     }
 
     return responseBody['success'];
@@ -38,14 +44,13 @@ class UserSource {
 
     if (responseBody == null) return false;
     if (responseBody['success']) {
-      DInfo.dialogSuccess('Registrasi Berhasil');
-      DInfo.closeDialog();
+      DInfo.notifSuccess('Registrasi Berhasil', 'Silahkan Login');
+      Get.to(LoginPage());
     } else {
-      if (responseBody['message'] == 'email') {
-        DInfo.dialogSuccess('Email Sudah Terdaftar');
-        DInfo.closeDialog();
+      if (responseBody['data'] == 'email') {
+        DInfo.toastError('Email Sudah Terdaftar');
       } else {
-        DInfo.dialogSuccess('Registrasi Gagal!');
+        DInfo.toastError('Registrasi Gagal!');
       }
     }
 
