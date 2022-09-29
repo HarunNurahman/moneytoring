@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:moneytoring/services/user_controller.dart';
+import 'package:moneytoring/services/controllers/user_controller.dart';
 import 'package:moneytoring/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

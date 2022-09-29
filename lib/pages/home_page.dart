@@ -2,7 +2,11 @@ import 'package:d_chart/d_chart.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:moneytoring/services/user_controller.dart';
+import 'package:moneytoring/pages/login_page.dart';
+import 'package:moneytoring/services/app_format.dart';
+import 'package:moneytoring/services/controllers/home_controller.dart';
+import 'package:moneytoring/services/controllers/user_controller.dart';
+import 'package:moneytoring/services/session_services.dart';
 import 'package:moneytoring/shared/styles.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +18,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _userController = Get.put(UserController());
+  final _homeController = Get.put(HomeController());
+
+  @override
+  void initState() {
+    _homeController.getAnalysis(_userController.getData.idUser!);
+
+    super.initState();
+  }
 
   // Greeting timer
   String greeting() {
@@ -30,7 +42,134 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: Drawer(),
+      endDrawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              margin: const EdgeInsets.only(bottom: 0),
+              padding: const EdgeInsets.fromLTRB(20, 16, 16, 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/images/img_profile.png',
+                        width: 50,
+                      ),
+                      DView.spaceWidth(),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Obx(
+                              () {
+                                return Text(
+                                  _userController.getData.name ?? '',
+                                  style: blackTextStyle.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: semiBold,
+                                  ),
+                                );
+                              },
+                            ),
+                            Obx(
+                              () {
+                                return Text(
+                                  _userController.getData.email ?? '',
+                                  style: blackTextStyle,
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  DView.spaceHeight(20),
+                  Material(
+                    color: kPrimaryColor,
+                    borderRadius: BorderRadius.circular(30),
+                    child: InkWell(
+                      onTap: () {
+                        Session.deleteUser();
+                        Get.off(() => LoginPage());
+                      },
+                      borderRadius: BorderRadius.circular(30),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 8,
+                        ),
+                        child: Text(
+                          'Logout',
+                          style: whiteTextStyle.copyWith(
+                            fontWeight: semiBold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              onTap: () {},
+              leading: const Icon(Icons.add),
+              horizontalTitleGap: 0,
+              title: Text(
+                'Tambah Transaksi Baru',
+                style: blackTextStyle,
+              ),
+              trailing: Icon(
+                Icons.navigate_next,
+                color: kPrimaryColor,
+              ),
+            ),
+            ListTile(
+              onTap: () {},
+              leading: const Icon(Icons.south_west),
+              horizontalTitleGap: 0,
+              title: Text(
+                'Pemasukan',
+                style: blackTextStyle,
+              ),
+              trailing: Icon(
+                Icons.navigate_next,
+                color: kPrimaryColor,
+              ),
+            ),
+            ListTile(
+              onTap: () {},
+              leading: const Icon(Icons.north_east),
+              horizontalTitleGap: 0,
+              title: Text(
+                'Pengeluaran',
+                style: blackTextStyle,
+              ),
+              trailing: Icon(
+                Icons.navigate_next,
+                color: kPrimaryColor,
+              ),
+            ),
+            ListTile(
+              onTap: () {},
+              leading: const Icon(Icons.history),
+              horizontalTitleGap: 0,
+              title: Text(
+                'Riwayat Transaksi',
+                style: blackTextStyle,
+              ),
+              trailing: Icon(
+                Icons.navigate_next,
+                color: kPrimaryColor,
+              ),
+            ),
+            const Divider(height: 1)
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 50,
@@ -104,19 +243,25 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(24, 24, 0, 6),
-                          child: Text(
-                            'Rp 500.000,00',
-                            style: whiteTextStyle.copyWith(
-                              fontSize: 24,
-                              fontWeight: semiBold,
-                            ),
-                          ),
+                          child: Obx(() {
+                            return Text(
+                              AppFormat.currencyFormat(
+                                _homeController.todayTransaction.toString(),
+                              ),
+                              style: whiteTextStyle.copyWith(
+                                fontSize: 24,
+                                fontWeight: semiBold,
+                              ),
+                            );
+                          }),
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(24, 0, 0, 24),
-                          child: Text(
-                            '+20% dibanding kemarin',
-                            style: whiteTextStyle,
+                          child: Obx(
+                            () => Text(
+                              _homeController.todayPercentage,
+                              style: whiteTextStyle,
+                            ),
                           ),
                         ),
                         DView.spaceHeight(30),

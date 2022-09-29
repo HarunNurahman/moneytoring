@@ -4,7 +4,7 @@ import 'package:moneytoring/models/user_model.dart';
 import 'package:moneytoring/pages/home_page.dart';
 import 'package:moneytoring/pages/login_page.dart';
 import 'package:moneytoring/services/api_services.dart';
-import 'package:moneytoring/services/app_request.dart';
+import 'package:moneytoring/services/requests/app_request.dart';
 import 'package:moneytoring/services/session_services.dart';
 
 class UserSource {

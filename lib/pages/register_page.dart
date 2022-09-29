@@ -1,10 +1,7 @@
-import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:moneytoring/pages/home_page.dart';
-import 'package:moneytoring/pages/login_page.dart';
-import 'package:moneytoring/services/user_sources.dart';
+import 'package:moneytoring/services/sources/user_sources.dart';
 import 'package:moneytoring/shared/styles.dart';
 
 class RegisterPage extends StatefulWidget {
