@@ -343,19 +343,41 @@ class _HomePageState extends State<HomePage> {
                         height: MediaQuery.of(context).size.width * 0.5,
                         child: Stack(
                           children: [
-                            DChartPie(
-                              data: const [
-                                {'domain': 'Flutter', 'measure': 28},
-                                {'domain': 'React Native', 'measure': 27},
-                                {'domain': 'Ionic', 'measure': 20},
-                                {'domain': 'Cordova', 'measure': 15},
-                              ],
-                              fillColor: (pieData, index) => Colors.purple,
-                              donutWidth: 30,
-                              labelColor: Colors.white,
+                            Obx(
+                              () => DChartPie(
+                                data: [
+                                  {
+                                    'domain': 'Income',
+                                    'measure': _homeController.monthlyIncome,
+                                  },
+                                  {
+                                    'domain': 'Outcome',
+                                    'measure': _homeController.monthlyOutcome,
+                                  },
+                                  if (_homeController.monthlyIncome == 0 &&
+                                      _homeController.monthlyOutcome == 0)
+                                    {'domain': 0, 'measure': 1}
+                                ],
+                                fillColor: (pieData, index) {
+                                  switch (pieData['domain']) {
+                                    case 'income':
+                                      return kPrimaryColor;
+                                    case 'outcome':
+                                      return kChartColor;
+                                    default:
+                                      return kBackgroundColor.withOpacity(0.5);
+                                  }
+                                },
+                                donutWidth: 20,
+                                showLabelLine: false,
+                                labelColor: Colors.white,
+                              ),
                             ),
                             Center(
-                              child: Text('60%'),
+                              child: Obx(
+                                () =>
+                                    Text('${_homeController.incomePercentage}'),
+                              ),
                             )
                           ],
                         ),
@@ -393,12 +415,19 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                           DView.spaceHeight(20),
+                          Obx(() => Text(
+                                _homeController.monthlyPercentage,
+                                style: blackTextStyle.copyWith(fontSize: 12),
+                              )),
+                          DView.spaceHeight(10),
                           Text(
-                            'Pemasukan \nlebih besar 20% \ndari pengeluaran \n\natau setara:',
+                            'Atau Setara',
                             style: blackTextStyle.copyWith(fontSize: 12),
                           ),
                           Text(
-                            'Rp 200.000,00',
+                            AppFormat.currencyFormat(
+                              _homeController.differentMonth.toString(),
+                            ),
                             style: blueTextStyle.copyWith(
                               fontSize: 16,
                               fontWeight: semiBold,
