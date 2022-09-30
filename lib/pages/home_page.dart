@@ -305,27 +305,27 @@ class _HomePageState extends State<HomePage> {
                   DView.spaceHeight(30),
                   AspectRatio(
                     aspectRatio: 16 / 9,
-                    child: DChartBar(
-                      data: const [
-                        {
-                          'id': 'Bar',
-                          'data': [
-                            {'domain': '2020', 'measure': 3},
-                            {'domain': '2021', 'measure': 4},
-                            {'domain': '2022', 'measure': 6},
-                            {'domain': '2023', 'measure': 0.3},
+                    child: Obx(() => DChartBar(
+                          data: [
+                            {
+                              'id': 'Bar',
+                              'data': List.generate(
+                                7,
+                                (index) => {
+                                  'domain': _homeController.week()[index],
+                                  'measure':
+                                      _homeController.weeklyTransaction[index],
+                                },
+                              )
+                            },
                           ],
-                        },
-                      ],
-                      domainLabelPaddingToAxisLine: 16,
-                      axisLineTick: 2,
-                      axisLinePointTick: 2,
-                      axisLinePointWidth: 10,
-                      axisLineColor: Colors.green,
-                      measureLabelPaddingToAxisLine: 16,
-                      barColor: (barData, index, id) => Colors.green,
-                      showBarValue: true,
-                    ),
+                          domainLabelPaddingToAxisLine: 16,
+                          axisLineTick: 2,
+                          axisLineColor: kPrimaryColor,
+                          measureLabelPaddingToAxisLine: 16,
+                          barColor: (barData, index, id) => kPrimaryColor,
+                          showBarValue: true,
+                        )),
                   ),
                   DView.spaceHeight(30),
                   Text(
@@ -344,7 +344,7 @@ class _HomePageState extends State<HomePage> {
                         child: Stack(
                           children: [
                             DChartPie(
-                              data: [
+                              data: const [
                                 {'domain': 'Flutter', 'measure': 28},
                                 {'domain': 'React Native', 'measure': 27},
                                 {'domain': 'Ionic', 'measure': 20},
