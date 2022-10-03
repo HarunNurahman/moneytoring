@@ -2,6 +2,7 @@ import 'package:d_chart/d_chart.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moneytoring/pages/add-transaction_page.dart';
 import 'package:moneytoring/pages/login_page.dart';
 import 'package:moneytoring/services/app_format.dart';
 import 'package:moneytoring/services/controllers/home_controller.dart';
@@ -115,7 +116,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Get.to(AddTransaction());
+              },
               leading: const Icon(Icons.add),
               horizontalTitleGap: 0,
               title: Text(
