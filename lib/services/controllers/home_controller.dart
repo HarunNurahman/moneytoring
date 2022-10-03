@@ -8,8 +8,8 @@ class HomeController extends GetxController {
   final _todayPercentage = ''.obs;
   String get todayPercentage => _todayPercentage.value;
 
-  final _weeklyTransaction = [0, 0, 0, 0, 0, 0, 0].obs;
-  List<int> get weeklyTransaction => _weeklyTransaction.value;
+  final _weeklyTransaction = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0].obs;
+  List<double> get weeklyTransaction => _weeklyTransaction.value;
 
   List<String> get days => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   List<String> week() {
@@ -42,6 +42,7 @@ class HomeController extends GetxController {
 
   getAnalysis(String idUser) async {
     Map data = await TransactionSource.analysis(idUser);
+
     _todayTransaction.value = data['today'].toDouble();
     double yesterday = data['yesterday'].toDouble();
     double different = (todayTransaction - yesterday).abs();
@@ -57,7 +58,7 @@ class HomeController extends GetxController {
             : '-${percentage.toStringAsFixed(1)}% dibanding kemarin';
 
     _weeklyTransaction.value =
-        (data['yesterday']).map((e) => e.toDouble()).toList();
+        List.castFrom(data['week'].map((e) => e.toDouble()).toList());
 
     _monthlyIncome.value = data['month']['income'].toDouble();
     _monthlyOutcome.value = data['month']['outcome'].toDouble();

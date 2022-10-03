@@ -347,16 +347,16 @@ class _HomePageState extends State<HomePage> {
                               () => DChartPie(
                                 data: [
                                   {
-                                    'domain': 'Income',
+                                    'domain': 'income',
                                     'measure': _homeController.monthlyIncome,
                                   },
                                   {
-                                    'domain': 'Outcome',
+                                    'domain': 'outcome',
                                     'measure': _homeController.monthlyOutcome,
                                   },
                                   if (_homeController.monthlyIncome == 0 &&
                                       _homeController.monthlyOutcome == 0)
-                                    {'domain': 0, 'measure': 1}
+                                    {'domain': 'nol', 'measure': 1}
                                 ],
                                 fillColor: (pieData, index) {
                                   switch (pieData['domain']) {
