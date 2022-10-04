@@ -1,7 +1,10 @@
 import 'package:d_input/d_input.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:moneytoring/services/app_format.dart';
+import 'package:moneytoring/services/controllers/transaction/add-transaction_controller.dart';
 import 'package:moneytoring/shared/styles.dart';
 
 class AddTransaction extends StatelessWidget {
@@ -9,6 +12,11 @@ class AddTransaction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _priceController = TextEditingController();
+    final _nameController = TextEditingController();
+
+    final _addTransactionController = Get.put(AddTransactionController());
+
     return Scaffold(
       appBar: DView.appBarLeft('Transaksi Baru'),
       body: SafeArea(
@@ -21,13 +29,25 @@ class AddTransaction extends StatelessWidget {
             ),
             Row(
               children: [
-                Text(
-                  '2022-10-03',
-                  style: blackTextStyle,
-                ),
+                Obx(() => Text(
+                      _addTransactionController.date,
+                      style: blackTextStyle,
+                    )),
                 DView.spaceWidth(),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () async {
+                    DateTime? result = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2022, 01, 01),
+                      lastDate: DateTime(DateTime.now().year + 1),
+                    );
+                    if (result != null) {
+                      _addTransactionController.setDate(
+                        DateFormat('yyyy-MM-dd').format(result),
+                      );
+                    }
+                  },
                   icon: Icon(Icons.calendar_month_rounded),
                   label: Text(
                     'Tanggal',
@@ -42,32 +62,49 @@ class AddTransaction extends StatelessWidget {
               style: blackTextStyle.copyWith(fontWeight: bold),
             ),
             DView.spaceHeight(8),
-            DropdownButtonFormField(
-              value: 'Pemasukan',
-              items: ['Pemasukan', 'Pengeluaran'].map((e) {
-                return DropdownMenuItem(
-                  child: Text(e),
-                  value: e,
-                );
-              }).toList(),
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            ),
+            Obx(() => DropdownButtonFormField(
+                  value: _addTransactionController.type,
+                  items: ['Pemasukan', 'Pengeluaran'].map((e) {
+                    return DropdownMenuItem(
+                      child: Text(e),
+                      value: e,
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    _addTransactionController.setType(value);
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                )),
             DView.spaceHeight(),
             DInput(
-              controller: TextEditingController(),
+              controller: _nameController,
               title: 'Subjek/Objek Pengeluaran',
               hint: 'Pembelian',
             ),
             DView.spaceHeight(),
             DInput(
-              controller: TextEditingController(),
+              controller: _priceController,
               title: 'Jumlah',
               hint: 'Jumlah Pengeluaran',
               inputType: TextInputType.number,
+            ),
+            DView.spaceHeight(),
+            ElevatedButton(
+              onPressed: () {
+                _addTransactionController.addItem({
+                  'name': _nameController.text,
+                  'price': _priceController.text,
+                });
+                _nameController.clear();
+                _priceController.clear();
+              },
+              child: Text(
+                'Tambah ke item',
+                style: whiteTextStyle,
+              ),
             ),
             DView.spaceHeight(),
             Text(
@@ -81,17 +118,26 @@ class AddTransaction extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey),
               ),
-              child: Wrap(
-                children: [
-                  Chip(
-                    label: Text(
-                      'Sumber',
-                      style: blackTextStyle,
+              child: GetBuilder<AddTransactionController>(
+                builder: (_) {
+                  return Wrap(
+                    runSpacing: 8,
+                    spacing: 8,
+                    children: List.generate(
+                      _.items.length,
+                      (index) {
+                        return Chip(
+                          label: Text(
+                            _.items[index]['name'],
+                            style: blackTextStyle,
+                          ),
+                          deleteIcon: Icon(Icons.clear),
+                          onDeleted: () => _.deleteItem(index),
+                        );
+                      },
                     ),
-                    deleteIcon: const Icon(Icons.clear),
-                    onDeleted: () {},
-                  )
-                ],
+                  );
+                },
               ),
             ),
             DView.spaceHeight(),
@@ -102,13 +148,14 @@ class AddTransaction extends StatelessWidget {
                   style: blackTextStyle.copyWith(fontWeight: bold),
                 ),
                 DView.spaceWidth(6),
-                Text(
-                  AppFormat.currencyFormat(
-                    '300000',
-                  ),
-                  style: blueTextStyle.copyWith(
-                    fontSize: 24,
-                    fontWeight: semiBold,
+                Obx(
+                  () => Text(
+                    AppFormat.currencyFormat(
+                        _addTransactionController.total.toString()),
+                    style: blueTextStyle.copyWith(
+                      fontSize: 24,
+                      fontWeight: semiBold,
+                    ),
                   ),
                 ),
               ],
@@ -125,7 +172,7 @@ class AddTransaction extends StatelessWidget {
                     child: Text(
                       'SUBMIT',
                       style: whiteTextStyle.copyWith(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: semiBold,
                       ),
                     ),
