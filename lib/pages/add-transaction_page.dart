@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:d_input/d_input.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
@@ -5,18 +7,36 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:moneytoring/services/app_format.dart';
 import 'package:moneytoring/services/controllers/transaction/add-transaction_controller.dart';
+import 'package:moneytoring/services/controllers/user_controller.dart';
+import 'package:moneytoring/services/sources/transaction_sources.dart';
 import 'package:moneytoring/shared/styles.dart';
 
 class AddTransaction extends StatelessWidget {
-  const AddTransaction({Key? key}) : super(key: key);
+  AddTransaction({Key? key}) : super(key: key);
+  final _addTransactionController = Get.put(AddTransactionController());
+  final _userController = Get.put(UserController());
+
+  final _priceController = TextEditingController();
+  final _nameController = TextEditingController();
+
+  addTransaction() async {
+    bool success = await TransactionSource.addTransaction(
+      _userController.getData.idUser!,
+      _addTransactionController.date,
+      _addTransactionController.type,
+      jsonEncode(_addTransactionController.items),
+      _addTransactionController.total.toString(),
+    );
+    if (success) {
+      Future.delayed(
+        Duration(seconds: 3),
+        () => Get.back(),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final _priceController = TextEditingController();
-    final _nameController = TextEditingController();
-
-    final _addTransactionController = Get.put(AddTransactionController());
-
     return Scaffold(
       appBar: DView.appBarLeft('Transaksi Baru'),
       body: SafeArea(
@@ -165,7 +185,9 @@ class AddTransaction extends StatelessWidget {
               color: kPrimaryColor,
               borderRadius: BorderRadius.circular(16),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  addTransaction();
+                },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Center(

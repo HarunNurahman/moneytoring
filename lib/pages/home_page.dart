@@ -226,221 +226,227 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             Expanded(
-              child: ListView(
-                children: [
-                  DView.spaceHeight(30),
-                  Text(
-                    'Pengeluaran Hari Ini',
-                    style: blackTextStyle.copyWith(
-                      fontSize: 16,
-                      fontWeight: semiBold,
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  _homeController.getAnalysis(_userController.getData.idUser!);
+                },
+                child: ListView(
+                  children: [
+                    DView.spaceHeight(30),
+                    Text(
+                      'Pengeluaran Hari Ini',
+                      style: blackTextStyle.copyWith(
+                        fontSize: 16,
+                        fontWeight: semiBold,
+                      ),
                     ),
-                  ),
-                  DView.spaceHeight(10),
-                  Material(
-                    borderRadius: BorderRadius.circular(16),
-                    elevation: 4,
-                    color: kPrimaryColor,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    DView.spaceHeight(10),
+                    Material(
+                      borderRadius: BorderRadius.circular(16),
+                      elevation: 4,
+                      color: kPrimaryColor,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 24, 0, 6),
+                            child: Obx(() {
+                              return Text(
+                                AppFormat.currencyFormat(
+                                  _homeController.todayTransaction.toString(),
+                                ),
+                                style: whiteTextStyle.copyWith(
+                                  fontSize: 24,
+                                  fontWeight: semiBold,
+                                ),
+                              );
+                            }),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 0, 0, 24),
+                            child: Obx(
+                              () => Text(
+                                _homeController.todayPercentage,
+                                style: whiteTextStyle,
+                              ),
+                            ),
+                          ),
+                          DView.spaceHeight(30),
+                          Container(
+                            margin: const EdgeInsets.only(
+                              left: 24,
+                              bottom: 24,
+                            ),
+                            decoration: BoxDecoration(
+                              color: kWhiteColor,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(8),
+                                bottomLeft: Radius.circular(8),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'Selengkapnya',
+                                  style: blueTextStyle,
+                                ),
+                                Icon(
+                                  Icons.navigate_next_rounded,
+                                  color: kPrimaryColor,
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    DView.spaceHeight(30),
+                    Text(
+                      'Pengeluaran Minggu Ini',
+                      style: blackTextStyle.copyWith(
+                        fontSize: 16,
+                        fontWeight: semiBold,
+                      ),
+                    ),
+                    DView.spaceHeight(30),
+                    AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: Obx(() => DChartBar(
+                            data: [
+                              {
+                                'id': 'Bar',
+                                'data': List.generate(
+                                  7,
+                                  (index) => {
+                                    'domain': _homeController.week()[index],
+                                    'measure': _homeController
+                                        .weeklyTransaction[index],
+                                  },
+                                )
+                              },
+                            ],
+                            domainLabelPaddingToAxisLine: 16,
+                            axisLineTick: 2,
+                            axisLineColor: kPrimaryColor,
+                            measureLabelPaddingToAxisLine: 16,
+                            barColor: (barData, index, id) => kPrimaryColor,
+                            showBarValue: true,
+                          )),
+                    ),
+                    DView.spaceHeight(30),
+                    Text(
+                      'Pengeluaran Bulan Ini',
+                      style: blackTextStyle.copyWith(
+                        fontSize: 16,
+                        fontWeight: semiBold,
+                      ),
+                    ),
+                    DView.spaceHeight(30),
+                    Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 24, 0, 6),
-                          child: Obx(() {
-                            return Text(
-                              AppFormat.currencyFormat(
-                                _homeController.todayTransaction.toString(),
-                              ),
-                              style: whiteTextStyle.copyWith(
-                                fontSize: 24,
-                                fontWeight: semiBold,
-                              ),
-                            );
-                          }),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 0, 0, 24),
-                          child: Obx(
-                            () => Text(
-                              _homeController.todayPercentage,
-                              style: whiteTextStyle,
-                            ),
-                          ),
-                        ),
-                        DView.spaceHeight(30),
-                        Container(
-                          margin: const EdgeInsets.only(
-                            left: 24,
-                            bottom: 24,
-                          ),
-                          decoration: BoxDecoration(
-                            color: kWhiteColor,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              bottomLeft: Radius.circular(8),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          height: MediaQuery.of(context).size.width * 0.5,
+                          child: Stack(
                             children: [
-                              Text(
-                                'Selengkapnya',
-                                style: blueTextStyle,
+                              Obx(
+                                () => DChartPie(
+                                  data: [
+                                    {
+                                      'domain': 'income',
+                                      'measure': _homeController.monthlyIncome,
+                                    },
+                                    {
+                                      'domain': 'outcome',
+                                      'measure': _homeController.monthlyOutcome,
+                                    },
+                                    if (_homeController.monthlyIncome == 0 &&
+                                        _homeController.monthlyOutcome == 0)
+                                      {'domain': 'nol', 'measure': 1}
+                                  ],
+                                  fillColor: (pieData, index) {
+                                    switch (pieData['domain']) {
+                                      case 'income':
+                                        return kPrimaryColor;
+                                      case 'outcome':
+                                        return kChartColor;
+                                      default:
+                                        return kBackgroundColor
+                                            .withOpacity(0.5);
+                                    }
+                                  },
+                                  donutWidth: 20,
+                                  showLabelLine: false,
+                                  labelColor: Colors.white,
+                                ),
                               ),
-                              Icon(
-                                Icons.navigate_next_rounded,
-                                color: kPrimaryColor,
+                              Center(
+                                child: Obx(
+                                  () => Text(
+                                      '${_homeController.incomePercentage}'),
+                                ),
                               )
                             ],
                           ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  color: kPrimaryColor,
+                                ),
+                                DView.spaceWidth(8),
+                                Text(
+                                  'Pemasukan',
+                                  style: blackTextStyle,
+                                )
+                              ],
+                            ),
+                            DView.spaceHeight(10),
+                            Row(
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  color: kChartColor,
+                                ),
+                                DView.spaceWidth(8),
+                                Text(
+                                  'Pengeluaran',
+                                  style: blackTextStyle,
+                                )
+                              ],
+                            ),
+                            DView.spaceHeight(20),
+                            Obx(() => Text(
+                                  _homeController.monthlyPercentage,
+                                  style: blackTextStyle.copyWith(fontSize: 12),
+                                )),
+                            DView.spaceHeight(10),
+                            Text(
+                              'Atau Setara',
+                              style: blackTextStyle.copyWith(fontSize: 12),
+                            ),
+                            Text(
+                              AppFormat.currencyFormat(
+                                _homeController.differentMonth.toString(),
+                              ),
+                              style: blueTextStyle.copyWith(
+                                fontSize: 16,
+                                fontWeight: semiBold,
+                              ),
+                            ),
+                          ],
                         )
                       ],
                     ),
-                  ),
-                  DView.spaceHeight(30),
-                  Text(
-                    'Pengeluaran Minggu Ini',
-                    style: blackTextStyle.copyWith(
-                      fontSize: 16,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                  DView.spaceHeight(30),
-                  AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Obx(() => DChartBar(
-                          data: [
-                            {
-                              'id': 'Bar',
-                              'data': List.generate(
-                                7,
-                                (index) => {
-                                  'domain': _homeController.week()[index],
-                                  'measure':
-                                      _homeController.weeklyTransaction[index],
-                                },
-                              )
-                            },
-                          ],
-                          domainLabelPaddingToAxisLine: 16,
-                          axisLineTick: 2,
-                          axisLineColor: kPrimaryColor,
-                          measureLabelPaddingToAxisLine: 16,
-                          barColor: (barData, index, id) => kPrimaryColor,
-                          showBarValue: true,
-                        )),
-                  ),
-                  DView.spaceHeight(30),
-                  Text(
-                    'Pengeluaran Bulan Ini',
-                    style: blackTextStyle.copyWith(
-                      fontSize: 16,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                  DView.spaceHeight(30),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        height: MediaQuery.of(context).size.width * 0.5,
-                        child: Stack(
-                          children: [
-                            Obx(
-                              () => DChartPie(
-                                data: [
-                                  {
-                                    'domain': 'income',
-                                    'measure': _homeController.monthlyIncome,
-                                  },
-                                  {
-                                    'domain': 'outcome',
-                                    'measure': _homeController.monthlyOutcome,
-                                  },
-                                  if (_homeController.monthlyIncome == 0 &&
-                                      _homeController.monthlyOutcome == 0)
-                                    {'domain': 'nol', 'measure': 1}
-                                ],
-                                fillColor: (pieData, index) {
-                                  switch (pieData['domain']) {
-                                    case 'income':
-                                      return kPrimaryColor;
-                                    case 'outcome':
-                                      return kChartColor;
-                                    default:
-                                      return kBackgroundColor.withOpacity(0.5);
-                                  }
-                                },
-                                donutWidth: 20,
-                                showLabelLine: false,
-                                labelColor: Colors.white,
-                              ),
-                            ),
-                            Center(
-                              child: Obx(
-                                () =>
-                                    Text('${_homeController.incomePercentage}'),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 16,
-                                height: 16,
-                                color: kPrimaryColor,
-                              ),
-                              DView.spaceWidth(8),
-                              Text(
-                                'Pemasukan',
-                                style: blackTextStyle,
-                              )
-                            ],
-                          ),
-                          DView.spaceHeight(10),
-                          Row(
-                            children: [
-                              Container(
-                                width: 16,
-                                height: 16,
-                                color: kChartColor,
-                              ),
-                              DView.spaceWidth(8),
-                              Text(
-                                'Pengeluaran',
-                                style: blackTextStyle,
-                              )
-                            ],
-                          ),
-                          DView.spaceHeight(20),
-                          Obx(() => Text(
-                                _homeController.monthlyPercentage,
-                                style: blackTextStyle.copyWith(fontSize: 12),
-                              )),
-                          DView.spaceHeight(10),
-                          Text(
-                            'Atau Setara',
-                            style: blackTextStyle.copyWith(fontSize: 12),
-                          ),
-                          Text(
-                            AppFormat.currencyFormat(
-                              _homeController.differentMonth.toString(),
-                            ),
-                            style: blueTextStyle.copyWith(
-                              fontSize: 16,
-                              fontWeight: semiBold,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
