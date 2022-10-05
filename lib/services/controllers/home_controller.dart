@@ -72,7 +72,7 @@ class HomeController extends GetxController {
     _monthlyPercentage.value = isSameMonth
         ? 'Pemasukan\n100% sama\ndengan Pengeluaran'
         : isPlushMonth
-            ? 'Pemasukan\nlebih besar ${monthlyPercentage.toStringAsFixed(1)}% dari Pengeluaran'
-            : 'Pemasukan\nlebih kecil ${monthlyPercentage.toStringAsFixed(1)}% dari Pengeluaran';
+            ? 'Pemasukan lebih besar \n${monthlyPercentage.toStringAsFixed(1)}% \ndari Pengeluaran'
+            : 'Pemasukan lebih kecil \n${monthlyPercentage.toStringAsFixed(1)}% \ndari Pengeluaran';
   }
 }

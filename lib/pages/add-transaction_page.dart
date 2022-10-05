@@ -30,7 +30,7 @@ class AddTransaction extends StatelessWidget {
     if (success) {
       Future.delayed(
         Duration(seconds: 3),
-        () => Get.back(),
+        () => Get.back(result: true),
       );
     }
   }

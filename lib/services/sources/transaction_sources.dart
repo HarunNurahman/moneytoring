@@ -24,7 +24,7 @@ class TransactionSource {
       };
     }
 
-    return responseBody['success'];
+    return responseBody;
   }
 
   static Future<bool> addTransaction(
@@ -34,7 +34,7 @@ class TransactionSource {
     String detail,
     String total,
   ) async {
-    String url = '${ApiServices.userUrl}/add.php';
+    String url = '${ApiServices.transactionUrl}/add.php';
     Map? responseBody = await AppRequest.post(url, {
       'id_user': idUser,
       'date': date,

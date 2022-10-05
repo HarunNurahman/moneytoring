@@ -346,8 +346,8 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       children: [
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          height: MediaQuery.of(context).size.width * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          height: MediaQuery.of(context).size.width * 0.45,
                           child: Stack(
                             children: [
                               Obx(
@@ -384,7 +384,8 @@ class _HomePageState extends State<HomePage> {
                               Center(
                                 child: Obx(
                                   () => Text(
-                                      '${_homeController.incomePercentage}'),
+                                    '${_homeController.incomePercentage}%',
+                                  ),
                                 ),
                               )
                             ],
