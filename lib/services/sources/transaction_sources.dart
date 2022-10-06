@@ -102,4 +102,24 @@ class TransactionSource {
 
     return [];
   }
+
+  static Future<TransactionModel?> editTransaction(
+    String idUser,
+    String type,
+  ) async {
+    String url = '${ApiServices.transactionUrl}/where-date.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'type': type,
+    });
+
+    if (responseBody == null) return null;
+
+    if (responseBody['success']) {
+      var list = responseBody['data'];
+      return TransactionModel.fromJson(list);
+    }
+
+    return null;
+  }
 }

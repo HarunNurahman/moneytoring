@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:moneytoring/models/transaction_model.dart';
 import 'package:moneytoring/services/sources/transaction_sources.dart';
 
-class HistoryTransactionController extends GetxController {
+class TransactionController extends GetxController {
   final _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 

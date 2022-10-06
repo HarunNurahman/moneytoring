@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:moneytoring/models/transaction_model.dart';
+import 'package:moneytoring/pages/edit-transaction_page.dart';
 import 'package:moneytoring/services/app_format.dart';
-import 'package:moneytoring/services/controllers/transaction/history-transaction_controller.dart';
+import 'package:moneytoring/services/controllers/transaction/transaction_controller.dart';
 import 'package:moneytoring/services/controllers/user_controller.dart';
 import 'package:moneytoring/shared/styles.dart';
 
-class HistoryTransactionPage extends StatefulWidget {
-  const HistoryTransactionPage({
+class TransactionPage extends StatefulWidget {
+  const TransactionPage({
     super.key,
     required this.type,
   });
@@ -17,17 +18,29 @@ class HistoryTransactionPage extends StatefulWidget {
   final String type;
 
   @override
-  State<HistoryTransactionPage> createState() => _HistoryTransactionPageState();
+  State<TransactionPage> createState() => _TransactionPageState();
 }
 
-class _HistoryTransactionPageState extends State<HistoryTransactionPage> {
-  final historyTransaction = Get.put(HistoryTransactionController());
+class _TransactionPageState extends State<TransactionPage> {
+  final transactionController = Get.put(TransactionController());
   final userController = Get.put(UserController());
 
   final TextEditingController _searchController = TextEditingController();
 
   onRefresh() {
-    historyTransaction.getList(userController.getData.idUser, widget.type);
+    transactionController.getList(userController.getData.idUser, widget.type);
+  }
+
+  options(String value, TransactionModel transaction) {
+    if (value == 'update') {
+      Get.to(
+        EditTransasction(date: transaction.date!),
+      )?.then((value) {
+        if (value ?? false) {
+          onRefresh();
+        }
+      });
+    } else if (value == 'delete') {}
   }
 
   @override
@@ -70,7 +83,7 @@ class _HistoryTransactionPageState extends State<HistoryTransactionPage> {
                     ),
                     suffixIcon: IconButton(
                       onPressed: () {
-                        historyTransaction.getSearch(
+                        transactionController.getSearch(
                           userController.getData.idUser,
                           widget.type,
                           _searchController.text,
@@ -98,7 +111,7 @@ class _HistoryTransactionPageState extends State<HistoryTransactionPage> {
           ],
         ),
       ),
-      body: GetBuilder<HistoryTransactionController>(
+      body: GetBuilder<TransactionController>(
         builder: (_) {
           if (_.isLoading) return DView.loadingCircle();
           if (_.list.isEmpty) return DView.empty('Data Kosong');
@@ -109,20 +122,20 @@ class _HistoryTransactionPageState extends State<HistoryTransactionPage> {
             child: ListView.builder(
               itemCount: _.list.length,
               itemBuilder: (context, index) {
-                TransactionModel _transaction = _.list[index];
+                TransactionModel transaction = _.list[index];
                 return Card(
                   elevation: 4,
                   margin: EdgeInsets.fromLTRB(
                     16,
                     index == 0 ? 16 : 8,
                     16,
-                    index == 8 ? 16 : 8,
+                    index == _.list.length ? 16 : 8,
                   ),
                   child: Row(
                     children: [
                       DView.spaceWidth(),
                       Text(
-                        AppFormat.dateFormat(_transaction.date!),
+                        AppFormat.dateFormat(transaction.date!),
                         style: blackTextStyle.copyWith(
                           fontWeight: semiBold,
                           fontSize: 16,
@@ -130,7 +143,7 @@ class _HistoryTransactionPageState extends State<HistoryTransactionPage> {
                       ),
                       Expanded(
                         child: Text(
-                          AppFormat.currencyFormat(_transaction.total!),
+                          AppFormat.currencyFormat(transaction.total!),
                           style: blueTextStyle.copyWith(
                             fontSize: 16,
                             fontWeight: bold,
@@ -138,9 +151,24 @@ class _HistoryTransactionPageState extends State<HistoryTransactionPage> {
                           textAlign: TextAlign.end,
                         ),
                       ),
-                      PopupMenuButton(
-                        itemBuilder: (context) => [],
-                        onSelected: (value) {},
+                      PopupMenuButton<String>(
+                        onSelected: (value) => options(value, transaction),
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'update',
+                            child: Text(
+                              'Update',
+                              style: blackTextStyle.copyWith(fontSize: 12),
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Text(
+                              'Delete',
+                              style: blackTextStyle.copyWith(fontSize: 12),
+                            ),
+                          )
+                        ],
                       )
                     ],
                   ),
