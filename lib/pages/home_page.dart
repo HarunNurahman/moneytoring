@@ -3,6 +3,7 @@ import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:moneytoring/pages/add-transaction_page.dart';
+import 'package:moneytoring/pages/history-transaction_page.dart';
 import 'package:moneytoring/pages/login_page.dart';
 import 'package:moneytoring/services/app_format.dart';
 import 'package:moneytoring/services/controllers/home_controller.dart';
@@ -131,7 +132,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Get.to(HistoryTransactionPage(type: 'Pemasukan'));
+              },
               leading: const Icon(Icons.south_west),
               horizontalTitleGap: 0,
               title: Text(
@@ -144,7 +147,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Get.to(HistoryTransactionPage(type: 'Pengeluaran'));
+              },
               leading: const Icon(Icons.north_east),
               horizontalTitleGap: 0,
               title: Text(

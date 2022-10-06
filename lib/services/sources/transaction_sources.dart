@@ -1,6 +1,7 @@
 import 'package:d_info/d_info.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:moneytoring/models/transaction_model.dart';
 import 'package:moneytoring/services/api_services.dart';
 import 'package:moneytoring/services/requests/app_request.dart';
 
@@ -58,5 +59,47 @@ class TransactionSource {
     }
 
     return responseBody['success'];
+  }
+
+  static Future<List<TransactionModel>> incomeOutcome(
+    String idUser,
+    String type,
+  ) async {
+    String url = '${ApiServices.transactionUrl}/income-outcome.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'type': type,
+    });
+
+    if (responseBody == null) return [];
+
+    if (responseBody['success']) {
+      List list = responseBody['data'];
+      return list.map((e) => TransactionModel.fromJson(e)).toList();
+    }
+
+    return [];
+  }
+
+  static Future<List<TransactionModel>> inOutSearch(
+    String idUser,
+    String type,
+    String date,
+  ) async {
+    String url = '${ApiServices.transactionUrl}/income-outcome-search.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'type': type,
+      'date': date,
+    });
+
+    if (responseBody == null) return [];
+
+    if (responseBody['success']) {
+      List list = responseBody['data'];
+      return list.map((e) => TransactionModel.fromJson(e)).toList();
+    }
+
+    return [];
   }
 }
