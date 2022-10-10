@@ -1,3 +1,4 @@
+import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:moneytoring/pages/edit-transaction_page.dart';
 import 'package:moneytoring/services/app_format.dart';
 import 'package:moneytoring/services/controllers/transaction/transaction_controller.dart';
 import 'package:moneytoring/services/controllers/user_controller.dart';
+import 'package:moneytoring/services/sources/transaction_sources.dart';
 import 'package:moneytoring/shared/styles.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -31,7 +33,7 @@ class _TransactionPageState extends State<TransactionPage> {
     transactionController.getList(userController.getData.idUser, widget.type);
   }
 
-  options(String value, TransactionModel transaction) {
+  options(String value, TransactionModel transaction) async {
     if (value == 'update') {
       Get.to(
         EditTransasction(
@@ -43,7 +45,21 @@ class _TransactionPageState extends State<TransactionPage> {
           onRefresh();
         }
       });
-    } else if (value == 'delete') {}
+    } else if (value == 'delete') {
+      bool? isDelete = await DInfo.dialogConfirmation(
+        context,
+        'Hapus Transaksi!',
+        'Apa anda yakin ingin menghapus transaksi?',
+        textNo: 'Batal',
+        textYes: 'Hapus Transaksi',
+      );
+
+      if (isDelete!) {
+        bool success = await TransactionSource.deleteTransaction(
+            transaction.idTransaction!);
+        if (success) onRefresh();
+      }
+    }
   }
 
   @override
