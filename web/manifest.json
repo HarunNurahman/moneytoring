@@ -1,6 +1,6 @@
 {
-    "name": "moneytoring",
-    "short_name": "moneytoring",
+    "name": "moneytoring_devtest",
+    "short_name": "moneytoring_devtest",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

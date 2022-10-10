@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "moneytoring" "\0"
+            VALUE "FileDescription", "moneytoring_devtest" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "moneytoring" "\0"
+            VALUE "InternalName", "moneytoring_devtest" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "moneytoring.exe" "\0"
-            VALUE "ProductName", "moneytoring" "\0"
+            VALUE "OriginalFilename", "moneytoring_devtest.exe" "\0"
+            VALUE "ProductName", "moneytoring_devtest" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

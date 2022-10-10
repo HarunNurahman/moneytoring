@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.moneytoring">
+    package="com.example.moneytoring_devtest">
    <application
-        android:label="moneytoring"
+        android:label="moneytoring_devtest"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

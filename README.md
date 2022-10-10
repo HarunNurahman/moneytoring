@@ -1,4 +1,4 @@
-# moneytoring
+# moneytoring_devtest
 
 A new Flutter project.
 
