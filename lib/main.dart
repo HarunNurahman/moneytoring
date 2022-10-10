@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:moneytoring_devtest/models/user_models.dart';
 import 'package:moneytoring_devtest/pages/home_page.dart';
 import 'package:moneytoring_devtest/pages/login_page.dart';
 import 'package:moneytoring_devtest/services/session_services.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  initializeDateFormatting('id_ID').then(
+    (value) => {
+      runApp(const MyApp()),
+    },
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 // App Color
 Color kPrimaryColor = const Color(0xFF767AE7);
@@ -25,4 +26,14 @@ FontWeight bold = FontWeight.w700;
 class AppAssets {
   static const appLogo = 'assets/img_app-logo.png';
   static const imgProfile = 'assets/img_profile.png';
+}
+
+class AppFormat {
+  static String dateFormat(String stringDate) {
+    // from 2022-07-09
+    // Parsing String for date to DateTime
+    DateTime dateTime = DateTime.parse(stringDate);
+
+    return DateFormat('dd MMM yyyy', 'id_ID').toString(); // 09 JUL 2022
+  }
 }
