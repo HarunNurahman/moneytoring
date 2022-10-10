@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:get/get.dart';
+import 'package:moneytoring_devtest/controller/user_controller.dart';
 import 'package:moneytoring_devtest/models/user_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,7 +17,13 @@ class SessionServices {
     Map<String, dynamic> mapUser = userModel.toJson();
     String stringUser = jsonEncode(mapUser);
 
+    // Checking to proceed saving useer session to controller
     bool success = await prefs.setString('user', stringUser);
+    if (success) {
+      final userController = Get.put(UserController());
+      // If saving process is failed, the data wont be saved to controller
+      userController.setData(userModel);
+    }
 
     return success;
   }
@@ -38,6 +46,10 @@ class SessionServices {
       userModel = UserModel.fromJson(mapUser);
     }
 
+    final userController = Get.put(UserController());
+    // If saving process is failed, the data wont be saved to controller
+    userController.setData(userModel);
+
     return userModel;
   }
 
@@ -48,6 +60,9 @@ class SessionServices {
 
     // Checking if current user session is deleted
     bool success = await prefs.remove('user');
+    final userController = Get.put(UserController());
+    // If saving process is failed, the data wont be saved to controller
+    userController.setData(UserModel());
     return success;
   }
 }
