@@ -155,4 +155,14 @@ class TransactionSource {
 
     return responseBody['success'];
   }
+
+  static Future<bool> deleteTransaction(String idTransaction) async {
+    String url = '${ApiServices.transactionUrl}/delete.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_transaction': idTransaction,
+    });
+
+    if (responseBody == null) return false;
+    return responseBody['success'];
+  }
 }
