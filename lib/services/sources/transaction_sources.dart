@@ -103,7 +103,7 @@ class TransactionSource {
     return [];
   }
 
-  static Future<TransactionModel?> editTransaction(
+  static Future<TransactionModel?> whereDate(
     String idUser,
     String type,
   ) async {
@@ -121,5 +121,38 @@ class TransactionSource {
     }
 
     return null;
+  }
+
+  static Future<bool> updateTransaction(
+    String idTransaction,
+    String idUser,
+    String date,
+    String type,
+    String detail,
+    String total,
+  ) async {
+    String url = '${ApiServices.transactionUrl}/update.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_transaction': idTransaction,
+      'id_user': idUser,
+      'date': date,
+      'type': type,
+      'detail': detail,
+      'total': total,
+      'updated_at': DateTime.now().toIso8601String(),
+    });
+
+    if (responseBody == null) return false;
+    if (responseBody['success']) {
+      DInfo.notifSuccess('Update Berhasil', '');
+    } else {
+      if (responseBody['message'] == 'date') {
+        DInfo.toastError('Duplicated Transaction');
+      } else {
+        DInfo.toastError('Update Gagal!');
+      }
+    }
+
+    return responseBody['success'];
   }
 }

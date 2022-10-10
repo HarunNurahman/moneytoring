@@ -39,7 +39,7 @@ class EditTransactionController extends GetxController {
 
   init(idUser, date) async {
     TransactionModel? _transactionModel =
-        await TransactionSource.editTransaction(
+        await TransactionSource.whereDate(
       idUser,
       type,
     );

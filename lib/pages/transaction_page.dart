@@ -34,7 +34,10 @@ class _TransactionPageState extends State<TransactionPage> {
   options(String value, TransactionModel transaction) {
     if (value == 'update') {
       Get.to(
-        EditTransasction(date: transaction.date!),
+        EditTransasction(
+          date: transaction.date!,
+          idTransaction: transaction.idTransaction!,
+        ),
       )?.then((value) {
         if (value ?? false) {
           onRefresh();

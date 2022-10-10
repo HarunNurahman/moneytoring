@@ -5,6 +5,7 @@ import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:moneytoring/pages/home_page.dart';
 import 'package:moneytoring/services/app_format.dart';
 import 'package:moneytoring/services/controllers/transaction/add-transaction_controller.dart';
 import 'package:moneytoring/services/controllers/user_controller.dart';
@@ -29,8 +30,8 @@ class AddTransaction extends StatelessWidget {
     );
     if (success) {
       Future.delayed(
-        Duration(seconds: 3),
-        () => Get.back(result: true),
+        const Duration(seconds: 1500),
+        () => Get.to(const HomePage()),
       );
     }
   }
@@ -54,6 +55,7 @@ class AddTransaction extends StatelessWidget {
                       style: blackTextStyle,
                     )),
                 DView.spaceWidth(),
+                
                 ElevatedButton.icon(
                   onPressed: () async {
                     DateTime? result = await showDatePicker(

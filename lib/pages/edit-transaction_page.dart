@@ -1,19 +1,23 @@
 import 'dart:convert';
-
 import 'package:d_input/d_input.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:moneytoring/services/app_format.dart';
-import 'package:moneytoring/services/controllers/transaction/add-transaction_controller.dart';
 import 'package:moneytoring/services/controllers/transaction/edit-transaction_controller.dart';
 import 'package:moneytoring/services/controllers/user_controller.dart';
+import 'package:moneytoring/services/sources/transaction_sources.dart';
 import 'package:moneytoring/shared/styles.dart';
 
 class EditTransasction extends StatefulWidget {
-  EditTransasction({Key? key, required this.date}) : super(key: key);
+  const EditTransasction({
+    Key? key,
+    required this.date,
+    required this.idTransaction,
+  }) : super(key: key);
   final String date;
+  final String idTransaction;
 
   @override
   State<EditTransasction> createState() => _EditTransasctionState();
@@ -27,19 +31,20 @@ class _EditTransasctionState extends State<EditTransasction> {
   final _nameController = TextEditingController();
 
   editTransaction() async {
-    // bool success = await TransactionSource.addTransaction(
-    //   _userController.getData.idUser!,
-    //   _addTransactionController.date,
-    //   _addTransactionController.type,
-    //   jsonEncode(_addTransactionController.items),
-    //   _addTransactionController.total.toString(),
-    // );
-    // if (success) {
-    //   Future.delayed(
-    //     Duration(seconds: 3),
-    //     () => Get.back(result: true),
-    //   );
-    // }
+    bool success = await TransactionSource.updateTransaction(
+      widget.idTransaction,
+      _userController.getData.idUser!,
+      _editTransactionController.date,
+      _editTransactionController.type,
+      jsonEncode(_editTransactionController.items),
+      _editTransactionController.total.toString(),
+    );
+    if (success) {
+      Future.delayed(
+        const Duration(milliseconds: 1500),
+        () => Get.back(result: true),
+      );
+    }
   }
 
   @override
