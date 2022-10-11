@@ -227,7 +227,109 @@ class _HomePageState extends State<HomePage> {
     Widget monthlyOutcome() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [],
+        children: [
+          Text(
+            'Pengeluaran Bulan Ini',
+            style: blackTextStyle.copyWith(
+              fontSize: 18,
+              fontWeight: bold,
+            ),
+          ),
+          DView.spaceHeight(),
+          Row(
+            children: [
+              // Pie chart
+              Container(
+                width: MediaQuery.of(context).size.width * 0.5,
+                height: MediaQuery.of(context).size.width * 0.5,
+                child: Stack(
+                  children: [
+                    DChartPie(
+                      data: [
+                        {'domain': 'Flutter', 'measure': 28},
+                        {'domain': 'React Native', 'measure': 27},
+                      ],
+                      fillColor: (pieData, index) => Colors.purple,
+                      donutWidth: 30,
+                      labelColor: Colors.white,
+                    ),
+                    Center(
+                      child: Text(
+                        '60%',
+                        style: blueTextStyle.copyWith(
+                          fontSize: 24,
+                          fontWeight: light,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              // Detail outcome information
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // income color code
+                    Row(
+                      children: [
+                        Container(
+                          height: 16,
+                          width: 16,
+                          color: kPrimaryColor,
+                        ),
+                        DView.spaceWidth(8),
+                        Text(
+                          'Pemasukan',
+                          style: blackTextStyle,
+                        )
+                      ],
+                    ),
+                    DView.spaceWidth(8),
+                    // Outcome color code
+                    Row(
+                      children: [
+                        Container(
+                          height: 16,
+                          width: 16,
+                          color: kCyanColor,
+                        ),
+                        DView.spaceWidth(8),
+                        Text(
+                          'Pengeluaran',
+                          style: blackTextStyle,
+                        )
+                      ],
+                    ),
+                    DView.spaceHeight(20),
+                    Text(
+                      'Pemasukkan lebih besar 20% dari Pengeluaran',
+                      style: blackTextStyle.copyWith(fontWeight: light),
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    DView.spaceHeight(10),
+                    RichText(
+                      text: TextSpan(
+                        text: 'Atau setara:',
+                        style: blackTextStyle,
+                        children: [
+                          TextSpan(
+                            text: '\nIDR 20.000',
+                            style: blueTextStyle.copyWith(
+                              fontSize: 16,
+                              fontWeight: bold,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       );
     }
 
@@ -261,107 +363,7 @@ class _HomePageState extends State<HomePage> {
                   DView.spaceHeight(24),
                   weeklyOutcome(),
                   DView.spaceHeight(32),
-                  Text(
-                    'Pengeluaran Bulan Ini',
-                    style: blackTextStyle.copyWith(
-                      fontSize: 18,
-                      fontWeight: bold,
-                    ),
-                  ),
-                  DView.spaceHeight(),
-                  Row(
-                    children: [
-                      // Pie chart
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        height: MediaQuery.of(context).size.width * 0.5,
-                        child: Stack(
-                          children: [
-                            DChartPie(
-                              data: [
-                                {'domain': 'Flutter', 'measure': 28},
-                                {'domain': 'React Native', 'measure': 27},
-                              ],
-                              fillColor: (pieData, index) => Colors.purple,
-                              donutWidth: 30,
-                              labelColor: Colors.white,
-                            ),
-                            Center(
-                              child: Text(
-                                '60%',
-                                style: blueTextStyle.copyWith(
-                                  fontSize: 24,
-                                  fontWeight: light,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      // Detail outcome information
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // income color code
-                            Row(
-                              children: [
-                                Container(
-                                  height: 16,
-                                  width: 16,
-                                  color: kPrimaryColor,
-                                ),
-                                DView.spaceWidth(8),
-                                Text(
-                                  'Pemasukan',
-                                  style: blackTextStyle,
-                                )
-                              ],
-                            ),
-                            DView.spaceWidth(8),
-                            // Outcome color code
-                            Row(
-                              children: [
-                                Container(
-                                  height: 16,
-                                  width: 16,
-                                  color: kCyanColor,
-                                ),
-                                DView.spaceWidth(8),
-                                Text(
-                                  'Pengeluaran',
-                                  style: blackTextStyle,
-                                )
-                              ],
-                            ),
-                            DView.spaceHeight(20),
-                            Text(
-                              'Pemasukkan lebih besar 20% dari Pengeluaran',
-                              style: blackTextStyle.copyWith(fontWeight: light),
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            DView.spaceHeight(10),
-                            RichText(
-                              text: TextSpan(
-                                text: 'Atau setara:',
-                                style: blackTextStyle,
-                                children: [
-                                  TextSpan(
-                                    text: '\nIDR 20.000',
-                                    style: blueTextStyle.copyWith(
-                                      fontSize: 16,
-                                      fontWeight: bold,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  monthlyOutcome(),
                 ],
               ),
             ),
