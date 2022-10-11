@@ -28,9 +28,9 @@ class AppRequest {
   // POST
   static Future<Map?> post(
     String url,
-    Object? body,
+    Object? body, {
     Map<String, String>? headers,
-  ) async {
+  }) async {
     // Execute response
     try {
       http.Response response =
