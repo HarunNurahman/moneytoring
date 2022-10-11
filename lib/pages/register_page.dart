@@ -3,39 +3,30 @@ import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:moneytoring_devtest/pages/home_page.dart';
-import 'package:moneytoring_devtest/pages/register_page.dart';
 import 'package:moneytoring_devtest/services/source/user_source.dart';
 import 'package:moneytoring_devtest/styles.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  login() async {
+  registration() async {
     if (formKey.currentState!.validate()) {
       // Collecting data response body after validating
-      bool success = await UserSource.login(
+      await UserSource.register(
+        nameController.text,
         emailController.text,
         passController.text,
       );
-      if (success) {
-        // ignore: use_build_context_synchronously
-        DInfo.dialogSuccess(context, 'Login Berhasil');
-        // ignore: use_build_context_synchronously
-        DInfo.closeDialog(context, actionAfterClose: () {
-          Get.off(() => const HomePage());
-        });
-      } else {
-        DInfo.toastError('Gagal Login');
-      }
     }
   }
 
@@ -63,6 +54,37 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           Image.asset(AppAssets.appLogo),
                           DView.spaceHeight(40),
+                          // Name text field
+                          TextFormField(
+                            controller: nameController,
+                            validator: (value) => value == ''
+                                ? 'Harap Isi Nama Lengkap Anda'
+                                : null,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              hintText: 'Nama Lengkap',
+                              hintStyle: whiteTextStyle.copyWith(
+                                color: kWhiteColor.withOpacity(0.5),
+                              ),
+                              isDense: true,
+                              fillColor: kPrimaryColor.withOpacity(0.5),
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 16,
+                              ),
+                            ),
+                            style: whiteTextStyle.copyWith(
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          DView.spaceHeight(), // 16
                           // Email text field
                           TextFormField(
                             controller: emailController,
@@ -127,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: () => login(),
+                              onPressed: () => registration(),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: kPrimaryColor,
                                 shape: RoundedRectangleBorder(
@@ -135,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               child: Text(
-                                'MASUK',
+                                'DAFTAR',
                                 style: whiteTextStyle.copyWith(
                                   fontWeight: semiBold,
                                 ),
@@ -146,22 +168,22 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  // Register TextButton
+                  // Back to Login TextButton
                   Padding(
                     padding: const EdgeInsets.only(bottom: 30, top: 30),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Belum Punya Akun? ',
+                          'Sudah Punya Akun? ',
                           style: blackTextStyle,
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.to(() => const RegisterPage());
+                            Get.back();
                           },
                           child: Text(
-                            'Register',
+                            'Masuk',
                             style: blueTextStyle.copyWith(
                               fontWeight: semiBold,
                               decoration: TextDecoration.underline,
