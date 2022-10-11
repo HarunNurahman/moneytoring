@@ -129,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: ElevatedButton(
                               onPressed: () => login(),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: kPrimaryColor,
+                                primary: kPrimaryColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
                                 ),

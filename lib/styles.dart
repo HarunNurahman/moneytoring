@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 // App Color
 Color kPrimaryColor = const Color(0xFF767AE7);
 Color kBlueColor = const Color(0xFF9AB3F5);
+Color kLightBlueColor = const Color(0xFFA3D8F4);
 Color kCyanColor = const Color(0xFFB9FFFC);
 Color kBlackColor = const Color(0xFF1F1F1F);
 Color kWhiteColor = const Color(0xFFFFFFFF);

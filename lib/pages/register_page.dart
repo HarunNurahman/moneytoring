@@ -151,7 +151,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: ElevatedButton(
                               onPressed: () => registration(),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: kPrimaryColor,
+                                primary: kPrimaryColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
                                 ),
