@@ -1,8 +1,11 @@
 import 'package:d_chart/d_chart.dart';
+import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:moneytoring_devtest/controller/user_controller.dart';
+import 'package:moneytoring_devtest/pages/login_page.dart';
+import 'package:moneytoring_devtest/services/session_services.dart';
 import 'package:moneytoring_devtest/styles.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final userController = Get.put(UserController());
 
-  // Greeting timer
+  // Greeting based on local time
   String greeting() {
     var hour = DateTime.now().hour;
     if (hour < 12) {
@@ -29,6 +32,121 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Drawer widget
+    Widget drawer() {
+      return Drawer(
+        child: Column(
+          children: [
+            // Drawer header (name, email, logout button)
+            DrawerHeader(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 32,
+                        backgroundImage: AssetImage(AppAssets.imgProfile),
+                      ),
+                      DView.spaceWidth(),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Get Name data from UserController
+                            Obx(
+                              () => Text(
+                                userController.data.name ?? '',
+                                style: blackTextStyle.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: semiBold,
+                                ),
+                              ),
+                            ),
+                            // Get Email data from UserController
+                            Obx(
+                              () => Text(
+                                userController.data.email ?? '',
+                                style: blackTextStyle,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            // Add new transaction
+            ListTile(
+              onTap: () {},
+              leading: Icon(Icons.add_rounded, color: kPrimaryColor),
+              horizontalTitleGap: 0,
+              title: Text('Tambah Transaksi Baru', style: blackTextStyle),
+              trailing: Icon(Icons.navigate_next_rounded, color: kPrimaryColor),
+            ),
+            const Divider(height: 1),
+            // List income
+            ListTile(
+              onTap: () {},
+              leading: Icon(Icons.south_west_rounded, color: kPrimaryColor),
+              horizontalTitleGap: 0,
+              title: Text('Pemasukan', style: blackTextStyle),
+              trailing: Icon(Icons.navigate_next_rounded, color: kPrimaryColor),
+            ),
+            const Divider(height: 1),
+            // List outcome
+            ListTile(
+              onTap: () {},
+              leading: Icon(Icons.north_east_rounded, color: kPrimaryColor),
+              horizontalTitleGap: 0,
+              title: Text('Pengeluaran', style: blackTextStyle),
+              trailing: Icon(Icons.navigate_next_rounded, color: kPrimaryColor),
+            ),
+            const Divider(height: 1),
+            // List history transaction
+            ListTile(
+              onTap: () {},
+              leading: Icon(Icons.history_rounded, color: kPrimaryColor),
+              horizontalTitleGap: 0,
+              title: Text('Riwayat Transaksi', style: blackTextStyle),
+              trailing: Icon(Icons.navigate_next_rounded, color: kPrimaryColor),
+            ),
+            const Divider(height: 1),
+            // Logout Button
+            Expanded(
+              child: Align(
+                alignment: FractionalOffset.bottomLeft,
+                child: ListTile(
+                  onTap: () async {
+                    bool? yes = await DInfo.dialogConfirmation(
+                      context,
+                      'Keluar?',
+                      'Anda Yakin Ingin Keluar?',
+                    );
+                    if (yes ?? false) {
+                      SessionServices.deleteCurrentUser();
+                      Get.to(() => const LoginPage());
+                    }
+                  },
+                  leading: Icon(
+                    Icons.logout_rounded,
+                    color: kPrimaryColor,
+                  ),
+                  title: Text(
+                    'Keluar',
+                    style: blackTextStyle,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     // Header (Image profile, name, drawer button)
     Widget header() {
       return Row(
@@ -62,25 +180,27 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          Builder(builder: (context) {
-            return GestureDetector(
-              onTap: () {
-                Scaffold.of(context).openEndDrawer();
-              },
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: kLightBlueColor,
-                  borderRadius: BorderRadius.circular(10),
+          Builder(
+            builder: (context) {
+              return GestureDetector(
+                onTap: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: kLightBlueColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.menu_rounded,
+                    color: kPrimaryColor,
+                  ),
                 ),
-                child: Icon(
-                  Icons.menu_rounded,
-                  color: kPrimaryColor,
-                ),
-              ),
-            );
-          }),
+              );
+            },
+          ),
         ],
       );
     }
@@ -334,7 +454,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      endDrawer: Drawer(),
+      endDrawer: drawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 50,
@@ -343,6 +463,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             header(),
+            DView.spaceHeight(24),
             // Body (Outcome daily, weekly, monthly)
             Expanded(
               child: ListView(
