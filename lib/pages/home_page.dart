@@ -3,6 +3,7 @@ import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moneytoring_devtest/controller/home_controller.dart';
 import 'package:moneytoring_devtest/controller/user_controller.dart';
 import 'package:moneytoring_devtest/pages/login_page.dart';
 import 'package:moneytoring_devtest/services/session_services.dart';
@@ -17,6 +18,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final userController = Get.put(UserController());
+  final homeController = Get.put(HomeController());
+
+  @override
+  void initState() {
+    homeController.getAnalysis(userController.data.idUser!);
+    super.initState();
+  }
 
   // Greeting based on local time
   String greeting() {
@@ -236,22 +244,30 @@ class _HomePageState extends State<HomePage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Total today outcome
                           Padding(
                             padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
-                            child: Text(
-                              'IDR 500.000',
-                              style: cyanTextStyle.copyWith(
-                                fontSize: 24,
-                                fontWeight: bold,
+                            child: Obx(
+                              () => Text(
+                                AppFormat.currencyFormat(
+                                  homeController.today.toString(),
+                                ),
+                                style: whiteTextStyle.copyWith(
+                                  fontSize: 24,
+                                  fontWeight: bold,
+                                ),
                               ),
                             ),
                           ),
+                          // Percentage outcome from yesterday
                           Padding(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                            child: Text(
-                              '+20% dibanding kemarin',
-                              style: cyanTextStyle.copyWith(
-                                fontWeight: light,
+                            child: Obx(
+                              () => Text(
+                                homeController.todayPercentage,
+                                style: whiteTextStyle.copyWith(
+                                  fontWeight: light,
+                                ),
                               ),
                             ),
                           ),
@@ -317,26 +333,29 @@ class _HomePageState extends State<HomePage> {
           DView.spaceHeight(),
           AspectRatio(
             aspectRatio: 16 / 9,
-            child: DChartBar(
-              data: [
-                {
-                  'id': 'Bar',
-                  'data': [
-                    {'domain': '2020', 'measure': 3},
-                    {'domain': '2021', 'measure': 4},
-                    {'domain': '2022', 'measure': 6},
-                    {'domain': '2023', 'measure': 0.3},
-                  ],
-                },
-              ],
-              domainLabelPaddingToAxisLine: 16,
-              axisLineTick: 2,
-              axisLinePointTick: 2,
-              axisLinePointWidth: 10,
-              axisLineColor: Colors.green,
-              measureLabelPaddingToAxisLine: 16,
-              barColor: (barData, index, id) => Colors.green,
-              showBarValue: true,
+            child: Obx(
+              () => DChartBar(
+                data: [
+                  {
+                    'id': 'Bar',
+                    'data': List.generate(
+                      7,
+                      (index) {
+                        return {
+                          'domain': homeController.weekData()[index],
+                          'measure': homeController.week[index],
+                        };
+                      },
+                    ),
+                  },
+                ],
+                domainLabelPaddingToAxisLine: 8,
+                axisLineTick: 2,
+                axisLineColor: kPrimaryColor,
+                measureLabelPaddingToAxisLine: 16,
+                barColor: (barData, index, id) => kCyanColor,
+                showBarValue: true,
+              ),
             ),
           ),
         ],
@@ -364,21 +383,44 @@ class _HomePageState extends State<HomePage> {
                 height: MediaQuery.of(context).size.width * 0.5,
                 child: Stack(
                   children: [
-                    DChartPie(
-                      data: [
-                        {'domain': 'Flutter', 'measure': 28},
-                        {'domain': 'React Native', 'measure': 27},
-                      ],
-                      fillColor: (pieData, index) => Colors.purple,
-                      donutWidth: 30,
-                      labelColor: Colors.white,
+                    Obx(
+                      () => DChartPie(
+                        data: [
+                          {
+                            'domain': 'income',
+                            'measure': homeController.monthIncome
+                          },
+                          {
+                            'domain': 'outcome',
+                            'measure': homeController.monthOutcome
+                          },
+                          if (homeController.monthIncome == 0 &&
+                              homeController.monthOutcome == 0)
+                            {'domain': 'nol', 'measure': 1},
+                        ],
+                        fillColor: (pieData, index) {
+                          switch (pieData['domain']) {
+                            case 'income':
+                              return kPrimaryColor;
+                            case 'outcome':
+                              return kCyanColor;
+                            default:
+                              return kWhiteColor;
+                          }
+                        },
+                        donutWidth: 20,
+                        labelColor: Colors.transparent,
+                        showLabelLine: false,
+                      ),
                     ),
                     Center(
-                      child: Text(
-                        '60%',
-                        style: blueTextStyle.copyWith(
-                          fontSize: 24,
-                          fontWeight: light,
+                      child: Obx(
+                        () => Text(
+                          '${homeController.incomePercentage}%',
+                          style: blueTextStyle.copyWith(
+                            fontSize: 24,
+                            fontWeight: light,
+                          ),
                         ),
                       ),
                     )
@@ -423,7 +465,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     DView.spaceHeight(20),
                     Text(
-                      'Pemasukkan lebih besar 20% dari Pengeluaran',
+                      homeController.monthPercentage,
                       style: blackTextStyle.copyWith(fontWeight: light),
                       maxLines: 4,
                       overflow: TextOverflow.ellipsis,
@@ -431,11 +473,13 @@ class _HomePageState extends State<HomePage> {
                     DView.spaceHeight(10),
                     RichText(
                       text: TextSpan(
-                        text: 'Atau setara:',
+                        text: 'Atau setara: \n',
                         style: blackTextStyle,
                         children: [
                           TextSpan(
-                            text: '\nIDR 20.000',
+                            text: AppFormat.currencyFormat(
+                              homeController.differentMonth.toString(),
+                            ),
                             style: blueTextStyle.copyWith(
                               fontSize: 16,
                               fontWeight: bold,

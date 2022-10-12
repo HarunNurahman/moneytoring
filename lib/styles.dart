@@ -29,12 +29,23 @@ class AppAssets {
   static const imgProfile = 'assets/img_profile.png';
 }
 
+// App Format (DateFormat and CurrencyFormat)
 class AppFormat {
+  // DateFormat
   static String dateFormat(String stringDate) {
     // from 2022-07-09
     // Parsing String for date to DateTime
     DateTime dateTime = DateTime.parse(stringDate);
 
     return DateFormat('dd MMM yyyy', 'id_ID').toString(); // 09 JUL 2022
+  }
+
+  // Currency Format
+  static String currencyFormat(String number) {
+    return NumberFormat.currency(
+      locale: 'id_ID',
+      decimalDigits: 0,
+      symbol: 'IDR ',
+    ).format(double.parse(number));
   }
 }
