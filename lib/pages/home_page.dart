@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:moneytoring_devtest/controller/home_controller.dart';
 import 'package:moneytoring_devtest/controller/user_controller.dart';
+import 'package:moneytoring_devtest/pages/add-history_page.dart';
 import 'package:moneytoring_devtest/pages/login_page.dart';
 import 'package:moneytoring_devtest/services/session_services.dart';
 import 'package:moneytoring_devtest/styles.dart';
@@ -89,7 +90,14 @@ class _HomePageState extends State<HomePage> {
             ),
             // Add new transaction
             ListTile(
-              onTap: () {},
+              onTap: () {
+                // Check if data is null or not
+                Get.to(() => AddHistoryPage())?.then((value) {
+                  if (value ?? false) {
+                    homeController.getAnalysis(userController.data.idUser!);
+                  }
+                });
+              },
               leading: Icon(Icons.add_rounded, color: kPrimaryColor),
               horizontalTitleGap: 0,
               title: Text('Tambah Transaksi Baru', style: blackTextStyle),
