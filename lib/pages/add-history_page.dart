@@ -1,14 +1,17 @@
 import 'package:d_input/d_input.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:moneytoring_devtest/controller/add-history_controller.dart';
 import 'package:moneytoring_devtest/styles.dart';
 
 class AddHistoryPage extends StatelessWidget {
   AddHistoryPage({Key? key}) : super(key: key);
-
-  TextEditingController objectController = TextEditingController();
-  TextEditingController sourceController = TextEditingController();
+  TextEditingController itemController = TextEditingController();
   TextEditingController valueController = TextEditingController();
+
+  final addHistoryController = Get.put(AddHistoryController());
 
   @override
   Widget build(BuildContext context) {
@@ -21,16 +24,29 @@ class AddHistoryPage extends StatelessWidget {
           // Select date button
           Row(
             children: [
-              Text(
-                '2022-10-12',
-                style: blackTextStyle.copyWith(
-                  fontSize: 16,
-                  color: kBlackColor.withOpacity(0.8),
-                ),
-              ),
+              Obx(() => Text(
+                    addHistoryController.date,
+                    style: blackTextStyle.copyWith(
+                      fontSize: 16,
+                      color: kBlackColor.withOpacity(0.8),
+                    ),
+                  )),
               DView.spaceWidth(),
               ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () async {
+                  DateTime? result = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2022, 01, 01),
+                    lastDate: DateTime(DateTime.now().year + 1),
+                  );
+                  // Check if there is a date that we choose and add to Controller
+                  if (result != null) {
+                    addHistoryController.setDate(
+                      DateFormat('yyyy-MM-dd').format(result),
+                    );
+                  }
+                },
                 icon: Icon(
                   Icons.calendar_month_rounded,
                   color: kWhiteColor,
@@ -39,7 +55,7 @@ class AddHistoryPage extends StatelessWidget {
                   'Pilih',
                   style: whiteTextStyle,
                 ),
-              )
+              ),
             ],
           ),
         ],
@@ -54,34 +70,38 @@ class AddHistoryPage extends StatelessWidget {
           // Transaction type
           Text('Tipe', style: blackTextStyle.copyWith(fontWeight: semiBold)),
           DView.spaceHeight(8),
-          DropdownButtonFormField(
-            value: 'Pemasukan',
-            items: ['Pemasukan', 'Pengeluaran'].map(
-              (e) {
-                return DropdownMenuItem(
-                  child: Text(e),
-                  value: e,
-                );
+          Obx(
+            () => DropdownButtonFormField(
+              value: addHistoryController.type,
+              items: ['Pemasukan', 'Pengeluaran'].map(
+                (e) {
+                  return DropdownMenuItem(
+                    child: Text(e),
+                    value: e,
+                  );
+                },
+              ).toList(),
+              onChanged: (value) {
+                addHistoryController.setType(value);
               },
-            ).toList(),
-            onChanged: (value) {},
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                isDense: true,
               ),
-              isDense: true,
             ),
           ),
           DView.spaceHeight(24),
           // Object Income / Outcome
           Text(
-            'Objek Pemasukan atau Pengeluaran',
+            'Objek Pemasukan / Pengeluaran',
             style: blackTextStyle.copyWith(fontWeight: semiBold),
           ),
           DView.spaceHeight(8),
           DInput(
-            controller: sourceController,
-            hint: 'Gajian',
+            controller: itemController,
+            hint: 'Contoh: Gajian, Kopi',
           ),
           DView.spaceHeight(24),
           // Value
@@ -91,11 +111,37 @@ class AddHistoryPage extends StatelessWidget {
           ),
           DView.spaceHeight(8),
           DInput(
-            controller: sourceController,
+            controller: valueController,
             inputType: TextInputType.number,
-            hint: '3000000',
           ),
-          DView.spaceHeight(24),
+          DView.spaceHeight(),
+          // Add to transaction item
+          Container(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                addHistoryController.addItem({
+                  'item': itemController.text,
+                  'value': valueController.text,
+                });
+                itemController.clear();
+                valueController.clear();
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: kPrimaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  )),
+              child: Text(
+                'Tambah Transaksi',
+                style: whiteTextStyle.copyWith(
+                  fontSize: 16,
+                  fontWeight: semiBold,
+                ),
+              ),
+            ),
+          ),
+          DView.spaceHeight(16),
           Center(
             child: Container(
               height: 5,
@@ -120,36 +166,55 @@ class AddHistoryPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.grey),
             ),
-            child: Chip(
-              label: Text(
-                'Bensin',
-                style: blackTextStyle.copyWith(
-                  fontSize: 12,
-                ),
-              ),
-              deleteIcon: const Icon(Icons.clear_rounded),
-              onDeleted: () {},
+            child: GetBuilder<AddHistoryController>(
+              builder: (_) {
+                return Wrap(
+                  runSpacing: 8,
+                  spacing: 8,
+                  children: List.generate(
+                    _.item.length,
+                    (index) {
+                      return Chip(
+                        backgroundColor: kPrimaryColor,
+                        label: Text(
+                          _.item[index]['item'],
+                          style: whiteTextStyle.copyWith(
+                            fontSize: 12,
+                          ),
+                        ),
+                        deleteIcon: const Icon(Icons.clear_rounded),
+                        deleteIconColor: kWhiteColor,
+                        onDeleted: () => _.deleteItem(index),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
           ),
           DView.spaceHeight(24),
           // Total transaction
           Row(
             children: [
-              RichText(
-                text: TextSpan(
-                  text: 'Total Transaksi: \n',
-                  style: blackTextStyle,
-                  children: [
-                    TextSpan(
-                      text: AppFormat.currencyFormat('300000'),
-                      style: blueTextStyle.copyWith(
-                        fontSize: 24,
-                        fontWeight: semiBold,
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              Obx(() => RichText(
+                    text: TextSpan(
+                      text: 'Total Transaksi: \n',
+                      style: blackTextStyle,
+                      children: [
+                        TextSpan(
+                          text: AppFormat.currencyFormat(
+                            addHistoryController.total.toString(),
+                          ),
+                          style: blueTextStyle.copyWith(
+                            fontSize: 24,
+                            fontWeight: semiBold,
+                            decoration: TextDecoration.underline,
+                          ),
+                          
+                        )
+                      ],
+                    ),
+                  )),
             ],
           ),
         ],
@@ -164,12 +229,13 @@ class AddHistoryPage extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {},
           style: ElevatedButton.styleFrom(
-              primary: kPrimaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              )),
+            backgroundColor: kPrimaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           child: Text(
-            'Tambah Transaksi',
+            'Selesaikan Transaksi',
             style: whiteTextStyle.copyWith(
               fontSize: 16,
               fontWeight: semiBold,
