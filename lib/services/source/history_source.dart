@@ -1,6 +1,7 @@
 import 'package:d_info/d_info.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:moneytoring_devtest/models/history_models.dart';
 import 'package:moneytoring_devtest/pages/home_page.dart';
 import 'package:moneytoring_devtest/pages/login_page.dart';
 import 'package:moneytoring_devtest/services/api_services.dart';
@@ -80,5 +81,53 @@ class HistorySource {
     }
 
     return responseBody['success'];
+  }
+
+  // Get Transaction based on type (Income or Outcome)
+  static Future<List<HistoryModel>> incomeOutcome(
+      String idUser, String type) async {
+    // Access from AppRequest
+    String url = '${ApiService.history}/income-outcome.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'type': type,
+    });
+
+    // If response body is null
+    if (responseBody == null) return [];
+
+    // Response body is success and insert to $data list
+    if (responseBody['success']) {
+      List list = responseBody['data'];
+      return list.map((e) => HistoryModel.fromJson(e)).toList();
+    }
+
+    return [];
+  }
+
+  // Search transaction
+  static Future<List<HistoryModel>> incomeOutcomeSearch(
+    String idUser,
+    String type,
+    String date,
+  ) async {
+    // Access from AppRequest
+    String url = '${ApiService.history}/income-outcome-search.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'type': type,
+      'date': date,
+    });
+
+    // If response body is null
+    if (responseBody == null) return [];
+
+    // Response body is success and insert to $data list
+    if (responseBody['success']) {
+      List list = responseBody['data'];
+      return list.map((e) => HistoryModel.fromJson(e)).toList();
+    }
+
+    return [];
   }
 }

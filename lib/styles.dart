@@ -37,7 +37,16 @@ class AppFormat {
     // Parsing String for date to DateTime
     DateTime dateTime = DateTime.parse(stringDate);
 
-    return DateFormat('dd MMM yyyy', 'id_ID').toString(); // 09 JUL 2022
+    return DateFormat('dd MMM yyyy', 'id_ID').format(dateTime); // 09 JUL 2022
+  }
+
+  // DateFormat
+  static String dateFormat2(String stringDate) {
+    // from 2022-07-09
+    // Parsing String for date to DateTime
+    DateTime dateTime = DateTime.parse(stringDate);
+
+    return DateFormat('yyyy-MM-dd', 'id_ID').format(dateTime); // 09 JUL 2022
   }
 
   // Currency Format

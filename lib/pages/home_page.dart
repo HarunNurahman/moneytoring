@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:moneytoring_devtest/controller/home_controller.dart';
 import 'package:moneytoring_devtest/controller/user_controller.dart';
 import 'package:moneytoring_devtest/pages/add-history_page.dart';
+import 'package:moneytoring_devtest/pages/income-outcome_page.dart';
 import 'package:moneytoring_devtest/pages/login_page.dart';
 import 'package:moneytoring_devtest/services/session_services.dart';
 import 'package:moneytoring_devtest/styles.dart';
@@ -110,7 +111,9 @@ class _HomePageState extends State<HomePage> {
             const Divider(height: 1),
             // List income
             ListTile(
-              onTap: () {},
+              onTap: () => Get.to(
+                () => const IncomeOutcomePage(type: 'Pemasukan'),
+              ),
               leading: Icon(Icons.south_west_rounded, color: kPrimaryColor),
               horizontalTitleGap: 0,
               title: Text('Pemasukan', style: blackTextStyle),
@@ -119,7 +122,9 @@ class _HomePageState extends State<HomePage> {
             const Divider(height: 1),
             // List outcome
             ListTile(
-              onTap: () {},
+              onTap: () => Get.to(
+                () => const IncomeOutcomePage(type: 'Pengeluaran'),
+              ),
               leading: Icon(Icons.north_east_rounded, color: kPrimaryColor),
               horizontalTitleGap: 0,
               title: Text('Pengeluaran', style: blackTextStyle),
