@@ -1,4 +1,8 @@
+import 'package:d_info/d_info.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:moneytoring_devtest/pages/home_page.dart';
+import 'package:moneytoring_devtest/pages/login_page.dart';
 import 'package:moneytoring_devtest/services/api_services.dart';
 import 'package:moneytoring_devtest/services/app_request.dart';
 
@@ -27,5 +31,54 @@ class HistorySource {
     }
 
     return responseBody;
+  }
+
+  // ADD TRANSACTION Source
+  static Future<bool> addTransaction(
+    String idUser,
+    String date,
+    String type,
+    String detail,
+    String total,
+  ) async {
+    // Access from AppRequest
+    String url = '${ApiService.history}/add.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'date': date,
+      'type': type,
+      'detail': detail,
+      'total': total,
+      // Getting date/time when submit register
+      'created_at': DateTime.now().toIso8601String(),
+      'updated_at': DateTime.now().toIso8601String(),
+    });
+
+    if (responseBody == null) return false;
+
+    // Check add transaction state
+    // 1. Transaction success state
+    // 2. Transaction has been done
+    // 3. Transaction failed
+
+    // If transaction success
+    if (responseBody['success']) {
+      DInfo.notifSuccess('Berhasil', 'Transaksi Berhasil!');
+      Get.to(() => const HomePage());
+    } else {
+      // If transaction already been done on same date
+      if (responseBody['message'] == 'date') {
+        DInfo.notifError(
+          'Transaksi Gagal',
+          'Transaksi Dengan Tanggal Tersebut Sudah Dibuat',
+        );
+        Get.to(() => const LoginPage());
+      } else {
+        // If error from backend
+        DInfo.notifError('Transaksi Gagal', 'Mohon Coba Beberapa Saat Lagi');
+      }
+    }
+
+    return responseBody['success'];
   }
 }

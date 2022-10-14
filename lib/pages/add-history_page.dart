@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:d_input/d_input.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:moneytoring_devtest/controller/add-history_controller.dart';
+import 'package:moneytoring_devtest/controller/user_controller.dart';
+import 'package:moneytoring_devtest/services/source/history_source.dart';
 import 'package:moneytoring_devtest/styles.dart';
 
 class AddHistoryPage extends StatelessWidget {
@@ -12,6 +16,23 @@ class AddHistoryPage extends StatelessWidget {
   TextEditingController valueController = TextEditingController();
 
   final addHistoryController = Get.put(AddHistoryController());
+  final userController = Get.put(UserController());
+
+  addHistory() async {
+    bool success = await HistorySource.addTransaction(
+      userController.data.idUser!,
+      addHistoryController.date,
+      addHistoryController.type,
+      jsonEncode(addHistoryController.item),
+      addHistoryController.total.toString(),
+    );
+    if (success) {
+      Future.delayed(
+        const Duration(seconds: 2),
+        () => Get.back(result: true),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +231,6 @@ class AddHistoryPage extends StatelessWidget {
                             fontWeight: semiBold,
                             decoration: TextDecoration.underline,
                           ),
-                          
                         )
                       ],
                     ),
@@ -227,7 +247,7 @@ class AddHistoryPage extends StatelessWidget {
         width: double.infinity,
         height: 50,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () => addHistory(),
           style: ElevatedButton.styleFrom(
             backgroundColor: kPrimaryColor,
             shape: RoundedRectangleBorder(

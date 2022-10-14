@@ -27,6 +27,10 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  Future<void> onRefresh() {
+    return homeController.getAnalysis(userController.data.idUser!);
+  }
+
   // Greeting based on local time
   String greeting() {
     var hour = DateTime.now().hour;
@@ -518,26 +522,29 @@ class _HomePageState extends State<HomePage> {
             DView.spaceHeight(24),
             // Body (Outcome daily, weekly, monthly)
             Expanded(
-              child: ListView(
-                children: [
-                  todayOutcome(),
-                  DView.spaceHeight(24),
-                  // Divider
-                  Center(
-                    child: Container(
-                      height: 5,
-                      width: 20,
-                      decoration: BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.circular(30),
+              child: RefreshIndicator(
+                onRefresh: () => onRefresh(),
+                child: ListView(
+                  children: [
+                    todayOutcome(),
+                    DView.spaceHeight(24),
+                    // Divider
+                    Center(
+                      child: Container(
+                        height: 5,
+                        width: 20,
+                        decoration: BoxDecoration(
+                          color: kPrimaryColor,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                       ),
                     ),
-                  ),
-                  DView.spaceHeight(24),
-                  weeklyOutcome(),
-                  DView.spaceHeight(32),
-                  monthlyOutcome(),
-                ],
+                    DView.spaceHeight(24),
+                    weeklyOutcome(),
+                    DView.spaceHeight(32),
+                    monthlyOutcome(),
+                  ],
+                ),
               ),
             ),
           ],

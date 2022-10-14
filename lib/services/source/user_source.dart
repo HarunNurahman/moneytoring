@@ -57,7 +57,7 @@ class UserSource {
     // If register success
     if (responseBody['success']) {
       var mapUser = responseBody['data'];
-      SessionServices.saveCurrentUser(UserModel.fromJson(mapUser));
+      SessionServices.saveCurrentUser(UserModel.fromJson(mapUser!));
       DInfo.notifSuccess('Registrasi Berhasil', 'Selamat Datang!');
       Get.to(() => const HomePage());
     } else {
