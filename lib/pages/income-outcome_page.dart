@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:moneytoring_devtest/controller/income-outcome_controller.dart';
 import 'package:moneytoring_devtest/controller/user_controller.dart';
 import 'package:moneytoring_devtest/models/history_models.dart';
+import 'package:moneytoring_devtest/pages/update-history_page.dart';
 import 'package:moneytoring_devtest/styles.dart';
 
 class IncomeOutcomePage extends StatefulWidget {
@@ -30,9 +31,25 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
     super.initState();
   }
 
+  menuOptions(String value, HistoryModel historyModel) {
+    if (value == 'update') {
+      Get.to(
+        () => UpdateHistoryPage(
+            date: historyModel.date!,
+            idTransaction: historyModel.idTransaction!),
+      )?.then((value) {
+        if (value ?? false) {
+          onRefresh();
+        }
+      });
+    } else if (value == 'delete') {}
+  }
+
   Future<void> onRefresh() {
     return incomeOutcomeController.getList(
-        userController.data.idUser!, widget.type);
+      userController.data.idUser,
+      widget.type,
+    );
   }
 
   @override
@@ -45,7 +62,7 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
           children: [
             Text(
               widget.type,
-              style: whiteTextStyle,
+              style: whiteTextStyle.copyWith(fontSize: 14),
             ),
             Expanded(
               child: Container(
@@ -124,7 +141,7 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
                     16,
                     index == 0 ? 16 : 8,
                     16,
-                    index == 8 ? 16 : 8,
+                    index == _.list.length ? 16 : 8,
                   ),
                   child: Row(
                     children: [
@@ -142,9 +159,26 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
                           textAlign: TextAlign.end,
                         ),
                       ),
-                      PopupMenuButton(
-                        itemBuilder: (context) => [],
-                        onSelected: (value) {},
+                      PopupMenuButton<String>(
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'update',
+                            child: Text(
+                              'Ubah',
+                              style: blackTextStyle.copyWith(fontSize: 12),
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Text(
+                              'Hapus',
+                              style: blackTextStyle.copyWith(fontSize: 12),
+                            ),
+                          )
+                        ],
+                        onSelected: (value) {
+                          menuOptions(value, historyModel);
+                        },
                       )
                     ],
                   ),

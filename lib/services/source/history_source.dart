@@ -73,7 +73,7 @@ class HistorySource {
           'Transaksi Gagal',
           'Transaksi Dengan Tanggal Tersebut Sudah Dibuat',
         );
-        Get.to(() => const LoginPage());
+        Get.to(() => const HomePage());
       } else {
         // If error from backend
         DInfo.notifError('Transaksi Gagal', 'Mohon Coba Beberapa Saat Lagi');
@@ -129,5 +129,79 @@ class HistorySource {
     }
 
     return [];
+  }
+
+  // Initial data for update transaction
+  static Future<HistoryModel?> whereDate(String idUser, String date) async {
+    // Access from AppRequest
+    String url = '${ApiService.history}/where-date.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'date': date,
+    });
+
+    // If response body is null
+    if (responseBody == null) return null;
+
+    // Response body is success and insert to $data list
+    if (responseBody['success']) {
+      var list = responseBody['data'];
+      return HistoryModel.fromJson(list);
+    }
+
+    return null;
+  }
+
+  // UPDATE Transaction Source
+  static Future<bool> updateTransaction(
+    String idTransaction,
+    String idUser,
+    String date,
+    String type,
+    String detail,
+    String total,
+  ) async {
+    // Access from AppRequest
+    String url = '${ApiService.history}/update.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_transaction': idTransaction,
+      'id_user': idUser,
+      'date': date,
+      'type': type,
+      'detail': detail,
+      'total': total,
+      // Getting date/time when submit register
+      'updated_at': DateTime.now().toIso8601String(),
+    });
+
+    if (responseBody == null) return false;
+
+    // Check add transaction state
+    // 1. Transaction success state
+    // 2. Transaction has been done
+    // 3. Transaction failed
+
+    // If transaction success
+    if (responseBody['success']) {
+      DInfo.notifSuccess('Berhasil', 'Transaksi Berhasil Diubah!');
+      Get.to(() => const HomePage());
+    } else {
+      // If transaction already been done on same date
+      if (responseBody['message'] == 'date') {
+        DInfo.notifError(
+          'Perubahan Transaksi Gagal',
+          'Transaksi Dengan Tanggal Tersebut Tidak Dapat Diubah!',
+        );
+        Get.to(() => const HomePage());
+      } else {
+        // If error from backend
+        DInfo.notifError(
+          'Perubahan Transaksi Gagal',
+          'Mohon Coba Beberapa Saat Lagi',
+        );
+      }
+    }
+
+    return responseBody['success'];
   }
 }

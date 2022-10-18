@@ -258,37 +258,43 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Total today outcome
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
-                            child: Obx(
-                              () => Text(
-                                AppFormat.currencyFormat(
-                                  homeController.today.toString(),
-                                ),
-                                style: whiteTextStyle.copyWith(
-                                  fontSize: 24,
-                                  fontWeight: bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          // Percentage outcome from yesterday
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                            child: Obx(
-                              () => Text(
-                                homeController.todayPercentage,
-                                style: whiteTextStyle.copyWith(
-                                  fontWeight: light,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Total today outcome
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
+                              child: Obx(
+                                () => Text(
+                                  AppFormat.currencyFormat(
+                                    homeController.today.toString(),
+                                  ),
+                                  style: whiteTextStyle.copyWith(
+                                      fontSize: 24,
+                                      fontWeight: bold,
+                                      overflow: TextOverflow.ellipsis
+                                  ),
+                                  maxLines: 2,
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                            // Percentage outcome from yesterday
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                              child: Obx(
+                                () => Text(
+                                  homeController.todayPercentage,
+                                  style: whiteTextStyle.copyWith(
+                                    fontWeight: light,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 16),
