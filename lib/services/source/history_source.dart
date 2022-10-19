@@ -204,4 +204,19 @@ class HistorySource {
 
     return responseBody['success'];
   }
+
+  // DELETE
+  static Future<bool> deleteTransaction(
+    String idTransaction,
+  ) async {
+    // Access from AppRequest
+    String url = '${ApiService.history}/delete.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_transaction': idTransaction,
+    });
+
+    if (responseBody == null) return false;
+
+    return responseBody['success'];
+  }
 }

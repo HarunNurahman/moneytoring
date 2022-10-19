@@ -1,3 +1,4 @@
+import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:moneytoring_devtest/controller/income-outcome_controller.dart';
 import 'package:moneytoring_devtest/controller/user_controller.dart';
 import 'package:moneytoring_devtest/models/history_models.dart';
 import 'package:moneytoring_devtest/pages/update-history_page.dart';
+import 'package:moneytoring_devtest/services/source/history_source.dart';
 import 'package:moneytoring_devtest/styles.dart';
 
 class IncomeOutcomePage extends StatefulWidget {
@@ -31,7 +33,7 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
     super.initState();
   }
 
-  menuOptions(String value, HistoryModel historyModel) {
+  menuOptions(String value, HistoryModel historyModel) async {
     if (value == 'update') {
       Get.to(
         () => UpdateHistoryPage(
@@ -42,7 +44,22 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
           onRefresh();
         }
       });
-    } else if (value == 'delete') {}
+    } else if (value == 'delete') {
+      bool? isDelete = await DInfo.dialogConfirmation(
+        context,
+        'Hapus Transaksi?',
+        'Anda Yakin Ingin Menghapus Transaksi Ini?',
+        textNo: 'Batal',
+        textYes: 'Hapus',
+      );
+
+      if (isDelete!) {
+        bool success = await HistorySource.deleteTransaction(
+          historyModel.idTransaction!,
+        );
+        if (success) onRefresh();
+      }
+    }
   }
 
   Future<void> onRefresh() {
