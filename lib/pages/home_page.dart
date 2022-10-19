@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:moneytoring_devtest/controller/home_controller.dart';
 import 'package:moneytoring_devtest/controller/user_controller.dart';
 import 'package:moneytoring_devtest/pages/add-history_page.dart';
+import 'package:moneytoring_devtest/pages/history_page.dart';
 import 'package:moneytoring_devtest/pages/income-outcome_page.dart';
 import 'package:moneytoring_devtest/pages/login_page.dart';
 import 'package:moneytoring_devtest/services/session_services.dart';
@@ -133,7 +134,9 @@ class _HomePageState extends State<HomePage> {
             const Divider(height: 1),
             // List history transaction
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Get.to(() => const HistoryPage());
+              },
               leading: Icon(Icons.history_rounded, color: kPrimaryColor),
               horizontalTitleGap: 0,
               title: Text('Riwayat Transaksi', style: blackTextStyle),
@@ -273,8 +276,7 @@ class _HomePageState extends State<HomePage> {
                                   style: whiteTextStyle.copyWith(
                                       fontSize: 24,
                                       fontWeight: bold,
-                                      overflow: TextOverflow.ellipsis
-                                  ),
+                                      overflow: TextOverflow.ellipsis),
                                   maxLines: 2,
                                 ),
                               ),

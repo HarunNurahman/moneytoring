@@ -219,4 +219,48 @@ class HistorySource {
 
     return responseBody['success'];
   }
+
+  // Get transaction history
+  static Future<List<HistoryModel>> history(String idUser) async {
+    // Access from AppRequest
+    String url = '${ApiService.history}/history.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+    });
+
+    // If response body is null
+    if (responseBody == null) return [];
+
+    // Response body is success and insert to $data list
+    if (responseBody['success']) {
+      List list = responseBody['data'];
+      return list.map((e) => HistoryModel.fromJson(e)).toList();
+    }
+
+    return [];
+  }
+
+  // Search transaction history
+  static Future<List<HistoryModel>> historySearch(
+    String idUser,
+    String date,
+  ) async {
+    // Access from AppRequest
+    String url = '${ApiService.history}/history-search.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'date': date,
+    });
+
+    // If response body is null
+    if (responseBody == null) return [];
+
+    // Response body is success and insert to $data list
+    if (responseBody['success']) {
+      List list = responseBody['data'];
+      return list.map((e) => HistoryModel.fromJson(e)).toList();
+    }
+
+    return [];
+  }
 }
