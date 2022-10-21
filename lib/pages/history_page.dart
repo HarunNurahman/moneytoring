@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:moneytoring_devtest/controller/history_controller.dart';
 import 'package:moneytoring_devtest/controller/user_controller.dart';
 import 'package:moneytoring_devtest/models/history_models.dart';
+import 'package:moneytoring_devtest/pages/detail-history_page.dart';
 import 'package:moneytoring_devtest/services/source/history_source.dart';
 import 'package:moneytoring_devtest/styles.dart';
 
@@ -138,34 +139,41 @@ class _HistoryPageState extends State<HistoryPage> {
                     16,
                     index == _.list.length ? 16 : 8,
                   ),
-                  child: Row(
-                    children: [
-                      DView.spaceWidth(),
-                      historyModel.type == 'Pemasukan'
-                          ? const Icon(Icons.south_west, color: Colors.green)
-                          : const Icon(Icons.north_east, color: Colors.red),
-                      DView.spaceWidth(),
-                      Text(
-                        AppFormat.dateFormat(historyModel.date!),
-                        style: blackTextStyle.copyWith(
-                          fontWeight: light,
+                  child: InkWell(
+                    onTap: () => Get.to(() => DetailHistoryPage(
+                          idUser: userController.data.idUser!,
+                          date: historyModel.date!,
+                        )),
+                    child: Row(
+                      children: [
+                        DView.spaceWidth(),
+                        historyModel.type == 'Pemasukan'
+                            ? const Icon(Icons.south_west, color: Colors.green)
+                            : const Icon(Icons.north_east, color: Colors.red),
+                        DView.spaceWidth(),
+                        Text(
+                          AppFormat.dateFormat(historyModel.date!),
+                          style: blackTextStyle.copyWith(
+                            fontWeight: light,
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          AppFormat.currencyFormat(historyModel.total!),
-                          style: blueTextStyle.copyWith(fontWeight: semiBold),
-                          textAlign: TextAlign.end,
+                        Expanded(
+                          child: Text(
+                            AppFormat.currencyFormat(historyModel.total!),
+                            style: blueTextStyle.copyWith(fontWeight: semiBold),
+                            textAlign: TextAlign.end,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () => onDelete(historyModel.idTransaction!),
-                        icon: const Icon(
-                          Icons.delete_forever,
-                          color: Colors.red,
+                        IconButton(
+                          onPressed: () =>
+                              onDelete(historyModel.idTransaction!),
+                          icon: const Icon(
+                            Icons.delete_forever,
+                            color: Colors.red,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },

@@ -3,9 +3,11 @@ import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:moneytoring_devtest/controller/home_controller.dart';
 import 'package:moneytoring_devtest/controller/user_controller.dart';
 import 'package:moneytoring_devtest/pages/add-history_page.dart';
+import 'package:moneytoring_devtest/pages/detail-history_page.dart';
 import 'package:moneytoring_devtest/pages/history_page.dart';
 import 'package:moneytoring_devtest/pages/income-outcome_page.dart';
 import 'package:moneytoring_devtest/pages/login_page.dart';
@@ -308,31 +310,39 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   DView.spaceHeight(24),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(16, 0, 0, 16),
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: kWhiteColor,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Selengkapnya',
-                          style: blueTextStyle.copyWith(
-                            fontSize: 16,
-                            fontWeight: light,
+                  GestureDetector(
+                    onTap: () => Get.to(() => DetailHistoryPage(
+                          idUser: userController.data.idUser!,
+                          date: DateFormat('yyyy-MM-dd').format(
+                            DateTime.now(),
                           ),
+                        )),
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(16, 0, 0, 16),
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: kWhiteColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomLeft: Radius.circular(8),
                         ),
-                        Icon(
-                          Icons.navigate_next_rounded,
-                          color: kPrimaryColor,
-                        ),
-                      ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Selengkapnya',
+                            style: blueTextStyle.copyWith(
+                              fontSize: 16,
+                              fontWeight: light,
+                            ),
+                          ),
+                          Icon(
+                            Icons.navigate_next_rounded,
+                            color: kPrimaryColor,
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 ],
@@ -378,7 +388,7 @@ class _HomePageState extends State<HomePage> {
                 axisLineTick: 2,
                 axisLineColor: kPrimaryColor,
                 measureLabelPaddingToAxisLine: 16,
-                barColor: (barData, index, id) => kCyanColor,
+                barColor: (barData, index, id) => kBlueColor,
                 showBarValue: true,
               ),
             ),
