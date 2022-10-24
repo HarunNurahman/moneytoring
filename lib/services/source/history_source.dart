@@ -263,4 +263,30 @@ class HistorySource {
 
     return [];
   }
+
+  // Detail Transaction
+  static Future<HistoryModel?> detailTransaction(
+    String idUser,
+    String date,
+    String type,
+  ) async {
+    // Access from AppRequest
+    String url = '${ApiService.history}/detail.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'date': date,
+      'type': type,
+    });
+
+    // If response body is null
+    if (responseBody == null) return null;
+
+    // Response body is success and insert to $data list
+    if (responseBody['success']) {
+      var list = responseBody['data'];
+      return HistoryModel.fromJson(list);
+    }
+
+    return null;
+  }
 }

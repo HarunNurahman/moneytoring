@@ -8,8 +8,12 @@ class DetailHistoryController extends GetxController {
   final _data = HistoryModel().obs;
   HistoryModel get data => _data.value;
 
-  getData(idUser, date) async {
-    HistoryModel? historyModel = await HistorySource.whereDate(idUser, date);
+  getData(idUser, date, type) async {
+    HistoryModel? historyModel = await HistorySource.detailTransaction(
+      idUser,
+      date,
+      type,
+    );
     _data.value = historyModel ?? HistoryModel();
     update();
   }

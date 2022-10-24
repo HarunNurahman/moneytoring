@@ -4,6 +4,7 @@ import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:moneytoring_devtest/controller/detail-history_controller.dart';
 import 'package:moneytoring_devtest/controller/user_controller.dart';
 import 'package:moneytoring_devtest/styles.dart';
@@ -13,9 +14,11 @@ class DetailHistoryPage extends StatefulWidget {
     super.key,
     required this.idUser,
     required this.date,
+    required this.type,
   });
   final String idUser;
   final String date;
+  final String type;
 
   @override
   State<DetailHistoryPage> createState() => _DetailHistoryPageState();
@@ -26,7 +29,11 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
 
   @override
   void initState() {
-    detailHistoryController.getData(widget.idUser, widget.date);
+    detailHistoryController.getData(
+      widget.idUser,
+      widget.date,
+      widget.type,
+    );
     super.initState();
   }
 
@@ -67,7 +74,13 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
       appBar: appBar(),
       body: GetBuilder<DetailHistoryController>(
         builder: (_) {
-          if (_.data.date == null) return DView.nothing();
+          if (_.data.date == null) {
+            String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+            if (widget.date == today && widget.type == 'Pengeluaran') {
+              return DView.empty('Belum Ada Pengeluaran');
+            }
+            return DView.nothing();
+          }
           List detail = jsonDecode(_.data.detail!);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -316,6 +316,7 @@ class _HomePageState extends State<HomePage> {
                           date: DateFormat('yyyy-MM-dd').format(
                             DateTime.now(),
                           ),
+                          type: 'Pengeluaran',
                         )),
                     child: Container(
                       margin: const EdgeInsets.fromLTRB(16, 0, 0, 16),

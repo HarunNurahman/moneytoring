@@ -165,6 +165,7 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
                     onTap: () => Get.to(() => DetailHistoryPage(
                           idUser: userController.data.idUser!,
                           date: historyModel.date!,
+                          type: historyModel.type!,
                         )),
                     child: Row(
                       children: [

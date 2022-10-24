@@ -143,6 +143,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     onTap: () => Get.to(() => DetailHistoryPage(
                           idUser: userController.data.idUser!,
                           date: historyModel.date!,
+                          type: historyModel.type!,
                         )),
                     child: Row(
                       children: [
