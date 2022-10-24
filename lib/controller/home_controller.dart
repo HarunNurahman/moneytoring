@@ -74,9 +74,9 @@ class HomeController extends GetxController {
     bool isPlus = today.isGreaterThan(yesterday);
     // Divider from different or range from today and yesterday
     // Check if there is default value (0) and change it to (1)
-    double byYesterday = yesterday == 0 ? 1 : yesterday;
+    double dividerToday = (today + yesterday) == 0 ? 1 : (today + yesterday);
     // Calculate percetage
-    double percentage = (different / byYesterday) * 100;
+    double percentage = (different / dividerToday) * 100;
     // Showing today and yesterday percentage result
     _todayPercentage.value = isSame
         ? '100% sama dengan kemarin' // If today outcome and yesterday is same
@@ -105,18 +105,18 @@ class HomeController extends GetxController {
     bool isPlusMonth = monthIncome.isGreaterThan(monthOutcome);
     // Divider from different or range from income and outcome
     // Check if there is default value (0) and change it to (1)
-    double byOutcome = monthOutcome == 0 ? 1 : monthOutcome;
+    double dividerMonth =
+        (monthIncome + monthOutcome) == 0 ? 1 : (monthIncome + monthOutcome);
     // Calculate percetage
-    double monthlyPercetage = (differentMonth / byOutcome) * 100;
+    double monthlyPercetage = (differentMonth / dividerMonth) * 100;
     // Income percentage for piechart
-    _incomePercentage.value =
-        ((differentMonth / byOutcome) * 100).toStringAsFixed(1);
+    _incomePercentage.value = monthlyPercetage.toStringAsFixed(1);
     // Percentage comparison result
     _monthPercentage.value = isSameMonth
         ? 'Pemasukan 100% sama dengan Pengeluaran'
         : isPlusMonth
-            ? "Pemasukan lebih besar +${monthlyPercetage.toStringAsFixed(1)}% dari Pengeluaran"
-            : "Pemasukan lebih kecil -${monthlyPercetage.toStringAsFixed(1)}% dari Pengeluaran ";
+            ? "Pemasukan lebih besar +$incomePercentage% dari Pengeluaran"
+            : "Pemasukan lebih kecil -$incomePercentage% dari Pengeluaran ";
   }
   /* ======================================================*/
 }
