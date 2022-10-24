@@ -117,8 +117,8 @@ class _UpdateHistoryPageState extends State<UpdateHistoryPage> {
               items: ['Pemasukan', 'Pengeluaran'].map(
                 (e) {
                   return DropdownMenuItem(
-                    child: Text(e),
                     value: e,
+                    child: Text(e),
                   );
                 },
               ).toList(),
@@ -207,7 +207,7 @@ class _UpdateHistoryPageState extends State<UpdateHistoryPage> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.grey),
             ),
-            child: GetBuilder<AddHistoryController>(
+            child: GetBuilder<UpdateHistoryController>(
               builder: (_) {
                 return Wrap(
                   runSpacing: 8,

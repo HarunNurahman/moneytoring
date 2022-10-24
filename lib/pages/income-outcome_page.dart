@@ -38,8 +38,9 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
     if (value == 'update') {
       Get.to(
         () => UpdateHistoryPage(
-            date: historyModel.date!,
-            idTransaction: historyModel.idTransaction!),
+          date: historyModel.date!,
+          idTransaction: historyModel.idTransaction!,
+        ),
       )?.then((value) {
         if (value ?? false) {
           onRefresh();
@@ -200,9 +201,10 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
                               ),
                             )
                           ],
-                          onSelected: (value) {
-                            menuOptions(value, historyModel);
-                          },
+                          onSelected: (value) => menuOptions(
+                            value,
+                            historyModel,
+                          ),
                         )
                       ],
                     ),

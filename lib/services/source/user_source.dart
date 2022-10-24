@@ -56,10 +56,8 @@ class UserSource {
 
     // If register success
     if (responseBody['success']) {
-      var mapUser = responseBody['data'];
-      SessionServices.saveCurrentUser(UserModel.fromJson(mapUser!));
-      DInfo.notifSuccess('Registrasi Berhasil', 'Selamat Datang!');
-      Get.to(() => const HomePage());
+      DInfo.notifSuccess('Registrasi Berhasil', 'Silahkan Login Kembali!');
+      Get.to(() => const LoginPage());
     } else {
       // If email already registered
       if (responseBody['message'] == 'email') {
