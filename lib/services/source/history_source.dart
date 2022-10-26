@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:moneytoring_devtest/models/history_models.dart';
 import 'package:moneytoring_devtest/pages/home_page.dart';
-import 'package:moneytoring_devtest/pages/login_page.dart';
 import 'package:moneytoring_devtest/services/api_services.dart';
 import 'package:moneytoring_devtest/services/app_request.dart';
 
