@@ -10,8 +10,14 @@ import 'package:moneytoring_devtest/controller/user_controller.dart';
 import 'package:moneytoring_devtest/services/source/history_source.dart';
 import 'package:moneytoring_devtest/styles.dart';
 
-class AddHistoryPage extends StatelessWidget {
-  AddHistoryPage({Key? key}) : super(key: key);
+class AddHistoryPage extends StatefulWidget {
+  const AddHistoryPage({Key? key}) : super(key: key);
+
+  @override
+  State<AddHistoryPage> createState() => _AddHistoryPageState();
+}
+
+class _AddHistoryPageState extends State<AddHistoryPage> {
   TextEditingController itemController = TextEditingController();
   TextEditingController valueController = TextEditingController();
 
@@ -45,13 +51,15 @@ class AddHistoryPage extends StatelessWidget {
           // Select date button
           Row(
             children: [
-              Obx(() => Text(
-                    addHistoryController.date,
-                    style: blackTextStyle.copyWith(
-                      fontSize: 16,
-                      color: kBlackColor.withOpacity(0.8),
-                    ),
-                  )),
+              Obx(
+                () => Text(
+                  addHistoryController.date,
+                  style: blackTextStyle.copyWith(
+                    fontSize: 16,
+                    color: kBlackColor.withOpacity(0.8),
+                  ),
+                ),
+              ),
               DView.spaceWidth(),
               ElevatedButton.icon(
                 onPressed: () async {
@@ -97,8 +105,8 @@ class AddHistoryPage extends StatelessWidget {
               items: ['Pemasukan', 'Pengeluaran'].map(
                 (e) {
                   return DropdownMenuItem(
-                    child: Text(e),
                     value: e,
+                    child: Text(e),
                   );
                 },
               ).toList(),
